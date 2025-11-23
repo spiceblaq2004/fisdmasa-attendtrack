@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FISDMASA AttendTrack</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .dashboard {
+            padding: 100px 20px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .recent-activity, .system-health {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .activity-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+        
+        .health-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .health-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-good { background: #d1fae5; color: #065f46; }
+        .status-warning { background: #fef3c7; color: #92400e; }
+        
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .admin-action {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: var(--dark);
+            transition: transform 0.3s;
+        }
+        
+        .admin-action:hover {
+            transform: translateY(-5px);
+        }
+        
+        .admin-action i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-fire-extinguisher"></i>
+                <span>FISDMASA AttendTrack</span>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">Home</a>
+                <span>Welcome, Admin!</span>
+                <a href="../index.html" class="login-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <div class="welcome-message">
+                <h1>Admin Dashboard</h1>
+                <p>Manage the entire attendance system</p>
+            </div>
+            <div class="btn btn-primary">
+                <i class="fas fa-cog"></i>
+                System Settings
+            </div>
+        </div>
+
+        <div class="admin-stats">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-number">328</div>
+                <p>Total Students</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <div class="stat-number">18</div>
+                <p>Lecturers</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-book"></i>
+                <div class="stat-number">24</div>
+                <p>Active Courses</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clipboard-check"></i>
+                <div class="stat-number">82%</div>
+                <p>Avg Attendance</p>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <div class="recent-activity">
+                <h2 style="margin-bottom: 20px;">Recent Activity</h2>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div>
+                        <strong>Dr. Mensah</strong> started attendance for FSDM 301
+                        <div style="color: var(--gray); font-size: 0.9rem;">2 minutes ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <strong>25 students</strong> marked attendance for FSDM 303
+                        <div style="color: var(--gray); font-size: 0.9rem;">15 minutes ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <strong>Low attendance alert</strong> for FSDM 305
+                        <div style="color: var(--gray); font-size: 0.9rem;">1 hour ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-health">
+                <h2 style="margin-bottom: 20px;">System Health</h2>
+                <div class="health-item">
+                    <span>Server Status</span>
+                    <span class="health-status status-good">Online</span>
+                </div>
+                <div class="health-item">
+                    <span>Database</span>
+                    <span class="health-status status-good">Healthy</span>
+                </div>
+                <div class="health-item">
+                    <span>QR Service</span>
+                    <span class="health-status status-good">Active</span>
+                </div>
+                <div class="health-item">
+                    <span>Email Notifications</span>
+                    <span class="health-status status-warning">Delayed</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-actions">
+            <a href="#" class="admin-action">
+                <i class="fas fa-user-cog"></i>
+                <h3>User Management</h3>
+                <p>Manage students and lecturers</p>
+            </a>
+            <a href="#" class="admin-action">
+                <i class="fas fa-book"></i>
+                <h3>Course Management</h3>
+                <p>Add/edit courses</p>
+            </a>
+            <a href="#" class="admin-action">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Analytics</h3>
+                <p>View detailed reports</p>
+            </a>
+            <a href="#" class="admin-action">
+                <i class="fas fa-download"></i>
+                <h3>Data Export</h3>
+                <p>Export system data</p>
+            </a>
+            <a href="#" class="admin-action">
+                <i class="fas fa-bell"></i>
+                <h3>Notifications</h3>
+                <p>Configure alerts</p>
+            </a>
+            <a href="#" class="admin-action">
+                <i class="fas fa-cog"></i>
+                <h3>System Settings</h3>
+                <p>Configure system</p>
+            </a>
+        </div>
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>
