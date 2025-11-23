@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner - FISDMASA AttendTrack</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .scanner-container {
+            padding: 100px 20px 50px;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .scanner-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .scanner-placeholder {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+            border: 3px dashed var(--primary);
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 4rem;
+        }
+        
+        .scanner-instructions {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .instruction-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .manual-entry {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-fire-extinguisher"></i>
+                <span>FISDMASA AttendTrack</span>
+            </div>
+            <div class="nav-links">
+                <a href="student-dashboard.html">Dashboard</a>
+                <a href="../index.html" class="login-btn">Cancel</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="scanner-container">
+        <h1 style="margin-bottom: 10px;">Scan QR Code</h1>
+        <p style="margin-bottom: 30px; color: var(--gray);">Point your camera at the QR code to mark attendance</p>
+        
+        <div class="scanner-box">
+            <div class="scanner-placeholder">
+                <i class="fas fa-camera"></i>
+            </div>
+            <h3>Camera Scanner</h3>
+            <p>Position QR code within frame</p>
+            
+            <div class="btn btn-primary" style="margin-top: 20px;">
+                <i class="fas fa-camera"></i>
+                Start Camera
+            </div>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+            <h3>Attendance Marked Successfully!</h3>
+            <p>FSDM 301: Fire Dynamics - 8:00 AM</p>
+            <p><strong>Dr. A. Mensah</strong></p>
+            <div style="margin-top: 15px;">
+                <a href="student-dashboard.html" class="btn">Back to Dashboard</a>
+            </div>
+        </div>
+        
+        <div class="scanner-instructions">
+            <h3 style="margin-bottom: 15px;">How to Scan:</h3>
+            <div class="instruction-step">
+                <div class="step-number">1</div>
+                <div>Ensure good lighting</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">2</div>
+                <div>Hold steady, 10-15 cm from code</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">3</div>
+                <div>Position code within frame</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">4</div>
+                <div>Wait for confirmation</div>
+            </div>
+        </div>
+        
+        <div class="manual-entry">
+            <h3 style="margin-bottom: 15px;">Manual Entry</h3>
+            <p style="margin-bottom: 20px; color: var(--gray);">If QR code is not working</p>
+            
+            <div class="form-group">
+                <label for="sessionCode">Session Code</label>
+                <input type="text" id="sessionCode" placeholder="Enter 6-digit code">
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-paper-plane"></i>
+                Submit Attendance
+            </button>
+        </div>
+    </div>
+
+    <script src="../js/qr-scanner.js"></script>
+    <script>
+        // Demo functionality
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            document.getElementById('successMessage').style.display = 'block';
+            this.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
