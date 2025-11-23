@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance History - FISDMASA AttendTrack</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .history-container {
+            padding: 100px 20px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-group select, .filter-group input {
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+        }
+        
+        .history-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            padding: 20px;
+            background: var(--light);
+            font-weight: bold;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .status-present {
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        .status-absent {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        
+        .status-late {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+        
+        .course-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .table-header, .table-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-fire-extinguisher"></i>
+                <span>FISDMASA AttendTrack</span>
+            </div>
+            <div class="nav-links">
+                <a href="student-dashboard.html">Dashboard</a>
+                <a href="../index.html">Home</a>
+                <a href="../index.html" class="login-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="history-container">
+        <div class="dashboard-header">
+            <div class="welcome-message">
+                <h1>Attendance History</h1>
+                <p>View your complete attendance record</p>
+            </div>
+            <div class="btn btn-primary">
+                <i class="fas fa-download"></i>
+                Export Report
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>Course:</label>
+                <select>
+                    <option>All Courses</option>
+                    <option>FSDM 301: Fire Dynamics</option>
+                    <option>FSDM 303: Disaster Management</option>
+                    <option>FSDM 305: Safety Engineering</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Month:</label>
+                <select>
+                    <option>All Months</option>
+                    <option>January 2024</option>
+                    <option>February 2024</option>
+                    <option>March 2024</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Status:</label>
+                <select>
+                    <option>All Status</option>
+                    <option>Present</option>
+                    <option>Absent</option>
+                    <option>Late</option>
+                </select>
+            </div>
+            
+            <button class="btn">Apply Filters</button>
+            <button class="btn">Reset</button>
+        </div>
+
+        <div class="history-table">
+            <div class="table-header">
+                <div>Course & Date</div>
+                <div>Time</div>
+                <div>Lecturer</div>
+                <div>Status</div>
+                <div>Remarks</div>
+            </div>
+            
+            <div class="table-row">
+                <div>
+                    <strong>FSDM 301: Fire Dynamics</strong>
+                    <div style="color: var(--gray); font-size: 0.9rem;">Mon, Mar 18, 2024</div>
+                </div>
+                <div>8:00 AM</div>
+                <div>Dr. A. Mensah</div>
+                <div class="status-present">Present</div>
+                <div>On time</div>
+            </div>
+            
+            <div class="table-row">
+                <div>
+                    <strong>FSDM 303: Disaster Management</strong>
+                    <div style="color: var(--gray); font-size: 0.9rem;">Tue, Mar 19, 2024</div>
+                </div>
+                <div>10:00 AM</div>
+                <div>Dr. K. Owusu</div>
+                <div class="status-present">Present</div>
+                <div>On time</div>
+            </div>
+            
+            <div class="table-row">
+                <div>
+                    <strong>FSDM 305: Safety Engineering</strong>
+                    <div style="color: var(--gray); font-size: 0.9rem;">Fri, Mar 22, 2024</div>
+                </div>
+                <div>2:00 PM</div>
+                <div>Prof. E. Asante</div>
+                <div class="status-late">Late</div>
+                <div>15 minutes late</div>
+            </div>
+            
+            <div class="table-row">
+                <div>
+                    <strong>FSDM 301: Fire Dynamics</strong>
+                    <div style="color: var(--gray); font-size: 0.9rem;">Mon, Mar 25, 2024</div>
+                </div>
+                <div>8:00 AM</div>
+                <div>Dr. A. Mensah</div>
+                <div class="status-absent">Absent</div>
+                <div>No reason provided</div>
+            </div>
+            
+            <div class="table-row">
+                <div>
+                    <strong>FSDM 303: Disaster Management</strong>
+                    <div style="color: var(--gray); font-size: 0.9rem;">Tue, Mar 26, 2024</div>
+                </div>
+                <div>10:00 AM</div>
+                <div>Dr. K. Owusu</div>
+                <div class="status-present">Present</div>
+                <div>On time</div>
+            </div>
+        </div>
+
+        <div class="export-options">
+            <button class="btn">
+                <i class="fas fa-file-pdf"></i>
+                Export as PDF
+            </button>
+            <button class="btn">
+                <i class="fas fa-file-excel"></i>
+                Export as Excel
+            </button>
+            <button class="btn">
+                <i class="fas fa-print"></i>
+                Print Report
+            </button>
+        </div>
+    </div>
+
+    <script src="../js/history.js"></script>
+</body>
+</html>
