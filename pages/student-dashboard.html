@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - FISDMASA AttendTrack</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .dashboard {
+            padding: 100px 20px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .welcome-message h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .attendance-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .course-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .course-header {
+            display: flex;
+            justify-content: between;
+            margin-bottom: 15px;
+        }
+        
+        .attendance-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .attendance-progress {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        .good { background: #10b981; }
+        .warning { background: #f59e0b; }
+        .danger { background: #ef4444; }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--dark);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-5px);
+        }
+        
+        .action-btn i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-fire-extinguisher"></i>
+                <span>FISDMASA AttendTrack</span>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">Home</a>
+                <a href="attendance-history.html">History</a>
+                <span>Welcome, Student!</span>
+                <a href="../index.html" class="login-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <div class="welcome-message">
+                <h1>Welcome back, Kwame!</h1>
+                <p>FSDM Level 300 • Student ID: FSDM2024001</p>
+            </div>
+            <a href="qr-scanner.html" class="btn btn-primary">
+                <i class="fas fa-qrcode"></i>
+                Scan QR Code
+            </a>
+        </div>
+
+        <div class="attendance-stats">
+            <div class="stat-card">
+                <div class="stat-number">85%</div>
+                <p>Overall Attendance</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <p>Classes Attended</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <p>Classes Missed</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">14</div>
+                <p>Total Classes</p>
+            </div>
+        </div>
+
+        <h2 style="margin-bottom: 20px;">Your Courses</h2>
+        <div class="courses-grid">
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>FSDM 301: Fire Dynamics</h3>
+                    <span class="attendance-percent good">90%</span>
+                </div>
+                <p>Dr. A. Mensah • Mon, Wed 8:00 AM</p>
+                <div class="attendance-bar">
+                    <div class="attendance-progress good" style="width: 90%;"></div>
+                </div>
+                <p>9/10 classes attended</p>
+            </div>
+            
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>FSDM 303: Disaster Management</h3>
+                    <span class="attendance-percent warning">75%</span>
+                </div>
+                <p>Dr. K. Owusu • Tue, Thu 10:00 AM</p>
+                <div class="attendance-bar">
+                    <div class="attendance-progress warning" style="width: 75%;"></div>
+                </div>
+                <p>6/8 classes attended</p>
+            </div>
+            
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>FSDM 305: Safety Engineering</h3>
+                    <span class="attendance-percent danger">60%</span>
+                </div>
+                <p>Prof. E. Asante • Fri 2:00 PM</p>
+                <div class="attendance-bar">
+                    <div class="attendance-progress danger" style="width: 60%;"></div>
+                </div>
+                <p>3/5 classes attended</p>
+                <small style="color: var(--danger);">⚠️ Low attendance warning</small>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <a href="qr-scanner.html" class="action-btn">
+                <i class="fas fa-qrcode"></i>
+                Scan QR
+            </a>
+            <a href="attendance-history.html" class="action-btn">
+                <i class="fas fa-history"></i>
+                History
+            </a>
+            <a href="#" class="action-btn">
+                <i class="fas fa-chart-bar"></i>
+                Analytics
+            </a>
+            <a href="#" class="action-btn">
+                <i class="fas fa-cog"></i>
+                Settings
+            </a>
+        </div>
+    </div>
+
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
