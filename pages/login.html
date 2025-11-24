@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Login - FISDMASA AttendTrack</title>
+    <title>Student Portal - FISDMASA AttendTrack</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -33,7 +33,7 @@
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 450px;
+            max-width: 500px;
             position: relative;
             z-index: 2;
         }
@@ -76,6 +76,33 @@
         .auth-header p {
             color: var(--gray);
             font-size: 0.95rem;
+        }
+        
+        .form-toggle {
+            display: flex;
+            background: var(--light);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 25px;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--gray);
+        }
+        
+        .toggle-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .auth-form {
@@ -155,42 +182,6 @@
             text-decoration: underline;
         }
         
-        .role-selection {
-            margin-bottom: 20px;
-        }
-        
-        .role-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .role-btn {
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-        
-        .role-btn.active {
-            border-color: var(--primary);
-            background: var(--light);
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        .role-btn i {
-            display: block;
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-            color: var(--primary);
-        }
-        
         .security-notice {
             background: var(--light);
             padding: 20px;
@@ -226,13 +217,39 @@
             z-index: 10;
         }
         
+        .form-section {
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .index-number-format {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        
+        .index-number-example {
+            background: var(--light);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            border-left: 3px solid var(--primary);
+        }
+        
         @media (max-width: 480px) {
             .auth-card {
                 padding: 30px 20px;
-            }
-            
-            .role-buttons {
-                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -244,7 +261,7 @@
             <div class="loading-overlay" id="loadingOverlay">
                 <div style="text-align: center;">
                     <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
-                    <p style="color: var(--dark); font-weight: 500;">Authenticating...</p>
+                    <p style="color: var(--dark); font-weight: 500;" id="loadingText">Processing...</p>
                 </div>
             </div>
             
@@ -254,43 +271,33 @@
                     <span>FISDMASA AttendTrack</span>
                 </div>
                 <div class="department-badge">
-                    Fire, Safety & Disaster Management Department
+                    Student Portal - FSDM Department
                 </div>
-                <h1>Secure System Access</h1>
-                <p>Enter your credentials to access the attendance portal</p>
+                <h1 id="formTitle">Student Access</h1>
+                <p id="formSubtitle">Sign in to your attendance portal</p>
             </div>
 
-            <form class="auth-form" id="loginForm" novalidate>
-                <div class="role-selection">
-                    <label class="form-label">Access Type</label>
-                    <div class="role-buttons">
-                        <div class="role-btn active" data-role="student">
-                            <i class="fas fa-user-graduate"></i>
-                            Student
-                        </div>
-                        <div class="role-btn" data-role="lecturer">
-                            <i class="fas fa-chalkboard-teacher"></i>
-                            Lecturer
-                        </div>
-                        <div class="role-btn" data-role="admin">
-                            <i class="fas fa-cog"></i>
-                            Administrator
-                        </div>
-                    </div>
+            <div class="form-toggle">
+                <button class="toggle-btn active" id="loginToggle">Sign In</button>
+                <button class="toggle-btn" id="registerToggle">New Student</button>
+            </div>
+
+            <!-- Login Form -->
+            <form class="auth-form form-section active" id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="loginIndexNumber" class="form-label">Index Number</label>
+                    <input type="text" id="loginIndexNumber" name="indexNumber" class="form-input" required 
+                           placeholder="UEB3214567" pattern="[A-Z]{3}\d{7}" maxlength="10"
+                           style="text-transform: uppercase;">
+                    <div class="index-number-format">10-character Index Number (e.g., UEB3214567)</div>
+                    <div class="error-message" id="loginIndexNumberError">Please enter your valid 10-character Index Number</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="email" class="form-label">Institutional Email</label>
-                    <input type="email" id="email" name="email" class="form-input" required 
-                           placeholder="your.email@uenr.edu.gh">
-                    <div class="error-message" id="emailError">Please enter a valid institutional email address</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-input" required 
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input type="password" id="loginPassword" name="password" class="form-input" required 
                            placeholder="Enter your password" minlength="6">
-                    <div class="error-message" id="passwordError">Password must be at least 6 characters</div>
+                    <div class="error-message" id="loginPasswordError">Password must be at least 6 characters</div>
                 </div>
 
                 <div class="form-options">
@@ -303,15 +310,61 @@
                     </a>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
-                    <i class="fas fa-lock"></i>
-                    Secure Login
+                <button type="submit" class="btn btn-primary btn-full" id="loginSubmitBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In to Portal
+                </button>
+            </form>
+
+            <!-- Registration Form -->
+            <form class="auth-form form-section" id="registerForm" novalidate>
+                <div class="form-group">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" class="form-input" required 
+                           placeholder="Enter your full name as on admission">
+                    <div class="error-message" id="fullNameError">Please enter your full name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerIndexNumber" class="form-label">Index Number</label>
+                    <input type="text" id="registerIndexNumber" name="indexNumber" class="form-input" required 
+                           placeholder="UEB3214567" pattern="[A-Z]{3}\d{7}" maxlength="10"
+                           style="text-transform: uppercase;">
+                    <div class="index-number-format">Your 10-character University Index Number</div>
+                    <div class="index-number-example">Format: 3 letters + 7 digits (e.g., UEB3214567)</div>
+                    <div class="error-message" id="registerIndexNumberError">Please enter a valid 10-character Index Number</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" class="form-input" required 
+                           placeholder="+233 XX XXX XXXX" pattern="[\+]?233\d{9}">
+                    <div class="error-message" id="phoneNumberError">Please enter a valid Ghanaian phone number</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword" class="form-label">Create Password</label>
+                    <input type="password" id="registerPassword" name="password" class="form-input" required 
+                           placeholder="Create a secure password" minlength="6">
+                    <div class="error-message" id="registerPasswordError">Password must be at least 6 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required 
+                           placeholder="Confirm your password">
+                    <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" id="registerSubmitBtn">
+                    <i class="fas fa-user-plus"></i>
+                    Create Student Account
                 </button>
             </form>
 
             <div class="security-notice">
-                <h4><i class="fas fa-shield-alt"></i> Security Notice</h4>
-                <p>This system contains confidential institutional data. Access is restricted to authorized personnel only. All activities are logged and monitored.</p>
+                <h4><i class="fas fa-shield-alt"></i> Account Security</h4>
+                <p>Your Index Number is your unique identifier for attendance tracking. Keep your credentials secure.</p>
             </div>
 
             <div style="text-align: center; margin-top: 20px;">
@@ -323,90 +376,212 @@
     </div>
 
     <script>
-        // Professional Authentication System
-        class AuthenticationSystem {
+        // Professional Student Authentication System with Index Numbers
+        class StudentAuthSystem {
             constructor() {
-                this.currentRole = 'student';
+                this.currentForm = 'login';
                 this.init();
             }
 
             init() {
                 this.setupEventListeners();
                 this.checkExistingSession();
+                this.loadExistingUsers();
             }
 
             setupEventListeners() {
-                // Role selection
-                document.querySelectorAll('.role-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.currentRole = btn.getAttribute('data-role');
-                    });
-                });
+                // Form toggle
+                document.getElementById('loginToggle').addEventListener('click', () => this.showForm('login'));
+                document.getElementById('registerToggle').addEventListener('click', () => this.showForm('register'));
 
-                // Form validation
+                // Login form
                 document.getElementById('loginForm').addEventListener('submit', (e) => {
                     e.preventDefault();
                     this.handleLogin();
                 });
 
+                // Registration form
+                document.getElementById('registerForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleRegistration();
+                });
+
                 // Real-time validation
-                document.getElementById('email').addEventListener('blur', () => this.validateEmail());
-                document.getElementById('password').addEventListener('blur', () => this.validatePassword());
+                this.setupValidation();
+
+                // Auto-format index numbers to uppercase
+                document.getElementById('loginIndexNumber').addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                });
+                document.getElementById('registerIndexNumber').addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                });
+            }
+
+            setupValidation() {
+                // Login validation
+                document.getElementById('loginIndexNumber').addEventListener('blur', () => this.validateIndexNumber('login'));
+                document.getElementById('loginPassword').addEventListener('blur', () => this.validatePassword('login'));
+
+                // Registration validation
+                document.getElementById('fullName').addEventListener('blur', () => this.validateFullName());
+                document.getElementById('registerIndexNumber').addEventListener('blur', () => this.validateIndexNumber('register'));
+                document.getElementById('phoneNumber').addEventListener('blur', () => this.validatePhoneNumber());
+                document.getElementById('registerPassword').addEventListener('blur', () => this.validatePassword('register'));
+                document.getElementById('confirmPassword').addEventListener('blur', () => this.validateConfirmPassword());
+            }
+
+            showForm(formType) {
+                this.currentForm = formType;
+                
+                // Update toggle buttons
+                document.getElementById('loginToggle').classList.toggle('active', formType === 'login');
+                document.getElementById('registerToggle').classList.toggle('active', formType === 'register');
+                
+                // Update forms
+                document.getElementById('loginForm').classList.toggle('active', formType === 'login');
+                document.getElementById('registerForm').classList.toggle('active', formType === 'register');
+                
+                // Update titles
+                document.getElementById('formTitle').textContent = 
+                    formType === 'login' ? 'Student Access' : 'New Student Registration';
+                document.getElementById('formSubtitle').textContent = 
+                    formType === 'login' ? 'Sign in to your attendance portal' : 'Create your student account';
             }
 
             checkExistingSession() {
                 const token = localStorage.getItem('authToken');
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
                 
-                if (token && user.role) {
-                    // Redirect to appropriate dashboard
-                    this.redirectToDashboard(user.role);
+                if (token && user.role === 'student') {
+                    this.redirectToDashboard();
                 }
             }
 
-            validateEmail() {
-                const email = document.getElementById('email').value;
-                const errorElement = document.getElementById('emailError');
-                
-                if (!email) {
-                    this.showError('email', 'Email address is required');
+            loadExistingUsers() {
+                // Load existing users from localStorage or initialize
+                if (!localStorage.getItem('studentUsers')) {
+                    // Initialize with some sample students for demonstration
+                    const sampleStudents = [
+                        {
+                            fullName: "Kwame Mensah",
+                            indexNumber: "UEB3214567",
+                            phoneNumber: "233245678901",
+                            password: "password123",
+                            createdAt: new Date().toISOString(),
+                            lastLogin: new Date().toISOString()
+                        },
+                        {
+                            fullName: "Ama Serwaa",
+                            indexNumber: "UEB3214568", 
+                            phoneNumber: "233245678902",
+                            password: "password123",
+                            createdAt: new Date().toISOString(),
+                            lastLogin: new Date().toISOString()
+                        }
+                    ];
+                    localStorage.setItem('studentUsers', JSON.stringify(sampleStudents));
+                }
+            }
+
+            // Validation Methods
+            validateFullName() {
+                const fullName = document.getElementById('fullName').value.trim();
+                if (!fullName) {
+                    this.showError('fullName', 'Full name is required');
                     return false;
                 }
-                
-                if (!this.isValidInstitutionalEmail(email)) {
-                    this.showError('email', 'Please use your institutional email address');
+                if (fullName.split(' ').length < 2) {
+                    this.showError('fullName', 'Please enter your full name (first and last name)');
                     return false;
                 }
-                
-                this.clearError('email');
+                this.clearError('fullName');
                 return true;
             }
 
-            validatePassword() {
-                const password = document.getElementById('password').value;
-                const errorElement = document.getElementById('passwordError');
+            validateIndexNumber(formType) {
+                const field = formType === 'login' ? 'loginIndexNumber' : 'registerIndexNumber';
+                const indexNumber = document.getElementById(field).value.trim();
+                const pattern = /^[A-Z]{3}\d{7}$/;
+                
+                if (!indexNumber) {
+                    this.showError(field, 'Index Number is required');
+                    return false;
+                }
+                
+                if (!pattern.test(indexNumber)) {
+                    this.showError(field, 'Invalid Index Number format. Use: 3 letters + 7 digits (e.g., UEB3214567)');
+                    return false;
+                }
+
+                // For registration, check if index number already exists
+                if (formType === 'register') {
+                    const existingUsers = JSON.parse(localStorage.getItem('studentUsers') || '[]');
+                    if (existingUsers.find(user => user.indexNumber === indexNumber)) {
+                        this.showError(field, 'Index Number already registered. Please sign in instead.');
+                        return false;
+                    }
+                }
+
+                this.clearError(field);
+                return true;
+            }
+
+            validatePhoneNumber() {
+                const phoneNumber = document.getElementById('phoneNumber').value.trim();
+                const pattern = /^[\+]?233\d{9}$/;
+                
+                if (!phoneNumber) {
+                    this.showError('phoneNumber', 'Phone number is required');
+                    return false;
+                }
+                
+                // Clean phone number for validation
+                const cleanPhone = phoneNumber.replace(/\s+/g, '').replace('-', '');
+                
+                if (!pattern.test(cleanPhone)) {
+                    this.showError('phoneNumber', 'Please enter a valid Ghanaian number (e.g., 233XXXXXXXXX)');
+                    return false;
+                }
+
+                this.clearError('phoneNumber');
+                return true;
+            }
+
+            validatePassword(formType) {
+                const field = formType === 'login' ? 'loginPassword' : 'registerPassword';
+                const password = document.getElementById(field).value;
                 
                 if (!password) {
-                    this.showError('password', 'Password is required');
+                    this.showError(field, 'Password is required');
                     return false;
                 }
                 
                 if (password.length < 6) {
-                    this.showError('password', 'Password must be at least 6 characters');
+                    this.showError(field, 'Password must be at least 6 characters');
                     return false;
                 }
-                
-                this.clearError('password');
+
+                this.clearError(field);
                 return true;
             }
 
-            isValidInstitutionalEmail(email) {
-                // Basic institutional email validation
-                return email.endsWith('@uenr.edu.gh') || 
-                       email.endsWith('@staff.uenr.edu.gh') ||
-                       email.endsWith('@student.uenr.edu.gh');
+            validateConfirmPassword() {
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (!confirmPassword) {
+                    this.showError('confirmPassword', 'Please confirm your password');
+                    return false;
+                }
+                
+                if (password !== confirmPassword) {
+                    this.showError('confirmPassword', 'Passwords do not match');
+                    return false;
+                }
+
+                this.clearError('confirmPassword');
+                return true;
             }
 
             showError(field, message) {
@@ -426,31 +601,28 @@
                 errorElement.style.display = 'none';
             }
 
+            // Form Handlers
             async handleLogin() {
-                // Validate form
-                const isEmailValid = this.validateEmail();
-                const isPasswordValid = this.validatePassword();
+                const isIndexNumberValid = this.validateIndexNumber('login');
+                const isPasswordValid = this.validatePassword('login');
                 
-                if (!isEmailValid || !isPasswordValid) {
+                if (!isIndexNumberValid || !isPasswordValid) {
                     this.showNotification('Please correct the errors above', 'error');
                     return;
                 }
 
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+                const indexNumber = document.getElementById('loginIndexNumber').value.trim();
+                const password = document.getElementById('loginPassword').value;
                 const rememberMe = document.querySelector('input[name="remember"]').checked;
 
-                this.showLoading(true);
+                this.showLoading(true, 'Signing you in...');
 
                 try {
-                    // Simulate API call delay
-                    await this.delay(1500);
+                    await this.delay(1200);
                     
-                    // In a real system, this would be an API call to your backend
-                    const user = await this.authenticateUser(email, password, this.currentRole);
+                    const user = await this.authenticateStudent(indexNumber, password);
                     
                     if (user) {
-                        // Store authentication data
                         const token = this.generateToken(user);
                         localStorage.setItem('authToken', token);
                         localStorage.setItem('user', JSON.stringify(user));
@@ -460,82 +632,171 @@
                         }
                         
                         this.showLoading(false);
-                        this.showNotification('Authentication successful', 'success');
+                        this.showNotification('Welcome back! Redirecting to your dashboard...', 'success');
                         
-                        // Redirect after short delay
                         setTimeout(() => {
-                            this.redirectToDashboard(user.role);
-                        }, 1000);
+                            this.redirectToDashboard();
+                        }, 1500);
                     } else {
-                        throw new Error('Invalid credentials');
+                        throw new Error('Invalid Index Number or password');
                     }
                 } catch (error) {
                     this.showLoading(false);
-                    this.showNotification(error.message || 'Authentication failed', 'error');
+                    this.showNotification(error.message, 'error');
                 }
             }
 
-            async authenticateUser(email, password, role) {
-                // This is where you would integrate with your actual authentication system
-                // For now, we'll simulate authentication
-                
-                // Simulate credential validation
-                if (password.length < 6) {
-                    throw new Error('Invalid credentials provided');
+            async handleRegistration() {
+                // Validate all registration fields
+                const validations = [
+                    this.validateFullName(),
+                    this.validateIndexNumber('register'),
+                    this.validatePhoneNumber(),
+                    this.validatePassword('register'),
+                    this.validateConfirmPassword()
+                ];
+
+                if (validations.includes(false)) {
+                    this.showNotification('Please correct the errors above', 'error');
+                    return;
                 }
 
-                // Simulate role-based access check
-                const userRoles = {
-                    'student@uenr.edu.gh': 'student',
-                    'lecturer@uenr.edu.gh': 'lecturer', 
-                    'admin@uenr.edu.gh': 'admin'
-                };
-
-                const userRole = userRoles[email] || role;
-
-                return {
-                    id: Date.now(),
-                    email: email,
-                    name: this.formatNameFromEmail(email),
-                    role: userRole,
-                    studentId: userRole === 'student' ? 'FSDM' + Math.floor(1000 + Math.random() * 9000) : null,
-                    department: 'Fire, Safety & Disaster Management',
+                const userData = {
+                    fullName: document.getElementById('fullName').value.trim(),
+                    indexNumber: document.getElementById('registerIndexNumber').value.trim(),
+                    phoneNumber: document.getElementById('phoneNumber').value.trim().replace(/\s+/g, '').replace('-', ''),
+                    password: document.getElementById('registerPassword').value,
+                    createdAt: new Date().toISOString(),
                     lastLogin: new Date().toISOString()
                 };
+
+                this.showLoading(true, 'Creating your account...');
+
+                try {
+                    await this.delay(1500);
+                    
+                    const user = await this.registerStudent(userData);
+                    
+                    if (user) {
+                        const token = this.generateToken(user);
+                        localStorage.setItem('authToken', token);
+                        localStorage.setItem('user', JSON.stringify(user));
+                        
+                        this.showLoading(false);
+                        this.showNotification('Account created successfully! Welcome to FISDMASA.', 'success');
+                        
+                        setTimeout(() => {
+                            this.redirectToDashboard();
+                        }, 2000);
+                    } else {
+                        throw new Error('Registration failed. Please try again.');
+                    }
+                } catch (error) {
+                    this.showLoading(false);
+                    this.showNotification(error.message, 'error');
+                }
             }
 
-            formatNameFromEmail(email) {
-                const namePart = email.split('@')[0];
-                return namePart.split('.')
-                    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-                    .join(' ');
+            async authenticateStudent(indexNumber, password) {
+                const existingUsers = JSON.parse(localStorage.getItem('studentUsers') || '[]');
+                const user = existingUsers.find(u => u.indexNumber === indexNumber && u.password === password);
+                
+                if (!user) {
+                    throw new Error('Invalid Index Number or password');
+                }
+
+                // Update last login
+                user.lastLogin = new Date().toISOString();
+                localStorage.setItem('studentUsers', JSON.stringify(existingUsers));
+
+                return {
+                    id: user.indexNumber,
+                    name: user.fullName,
+                    email: `${user.indexNumber.toLowerCase()}@student.uenr.edu.gh`,
+                    indexNumber: user.indexNumber,
+                    phoneNumber: user.phoneNumber,
+                    role: 'student',
+                    department: 'Fire, Safety & Disaster Management',
+                    level: this.determineLevel(user.indexNumber),
+                    lastLogin: user.lastLogin
+                };
+            }
+
+            async registerStudent(userData) {
+                const existingUsers = JSON.parse(localStorage.getItem('studentUsers') || '[]');
+                
+                // Check if index number already exists
+                if (existingUsers.find(user => user.indexNumber === userData.indexNumber)) {
+                    throw new Error('Index Number already registered');
+                }
+
+                // Add new user
+                existingUsers.push(userData);
+                localStorage.setItem('studentUsers', JSON.stringify(existingUsers));
+
+                return {
+                    id: userData.indexNumber,
+                    name: userData.fullName,
+                    email: `${userData.indexNumber.toLowerCase()}@student.uenr.edu.gh`,
+                    indexNumber: userData.indexNumber,
+                    phoneNumber: userData.phoneNumber,
+                    role: 'student',
+                    department: 'Fire, Safety & Disaster Management',
+                    level: this.determineLevel(userData.indexNumber),
+                    lastLogin: userData.lastLogin
+                };
+            }
+
+            determineLevel(indexNumber) {
+                // Extract year from index number (assuming format UEB3214567 where 321 indicates year)
+                const yearCode = indexNumber.substring(3, 6);
+                // Simple level determination based on year code
+                if (yearCode.startsWith('1')) return '100';
+                if (yearCode.startsWith('2')) return '200';
+                if (yearCode.startsWith('3')) return '300';
+                if (yearCode.startsWith('4')) return '400';
+                return '300'; // Default to 300 level
             }
 
             generateToken(user) {
-                // In a real system, this would be a JWT from your backend
                 return btoa(JSON.stringify({
                     userId: user.id,
-                    email: user.email,
-                    role: user.role,
-                    exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+                    indexNumber: user.indexNumber,
+                    role: 'student',
+                    exp: Date.now() + (24 * 60 * 60 * 1000)
                 }));
             }
 
-            redirectToDashboard(role) {
-                window.location.href = `${role}-dashboard.html`;
+            redirectToDashboard() {
+                window.location.href = 'student-dashboard.html';
             }
 
-            showLoading(show) {
+            showLoading(show, text = 'Processing...') {
                 const overlay = document.getElementById('loadingOverlay');
+                const loadingText = document.getElementById('loadingText');
+                
+                loadingText.textContent = text;
                 overlay.style.display = show ? 'flex' : 'none';
                 
-                const submitBtn = document.getElementById('submitBtn');
+                const loginBtn = document.getElementById('loginSubmitBtn');
+                const registerBtn = document.getElementById('registerSubmitBtn');
+                
                 if (show) {
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
-                    submitBtn.disabled = true;
+                    if (this.currentForm === 'login') {
+                        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+                        loginBtn.disabled = true;
+                    } else {
+                        registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                        registerBtn.disabled = true;
+                    }
                 } else {
-                    submitBtn.innerHTML = '<i class="fas fa-lock"></i> Secure Login';
-                    submitBtn.disabled = false;
+                    if (this.currentForm === 'login') {
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In to Portal';
+                        loginBtn.disabled = false;
+                    } else {
+                        registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Student Account';
+                        registerBtn.disabled = false;
+                    }
                 }
             }
 
@@ -575,13 +836,13 @@
         }
 
         function showForgotPassword() {
-            const authSystem = new AuthenticationSystem();
-            authSystem.showNotification('Please contact the IT Help Desk for password reset assistance', 'info');
+            const authSystem = new StudentAuthSystem();
+            authSystem.showNotification('Contact FSDM Department Office for password reset assistance', 'info');
         }
 
         // Initialize authentication system
         document.addEventListener('DOMContentLoaded', () => {
-            new AuthenticationSystem();
+            new StudentAuthSystem();
         });
     </script>
 </body>
