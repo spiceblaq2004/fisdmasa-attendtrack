@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - FISDMASA AttendTrack</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .auth-container {
             min-height: 100vh;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -21,7 +22,7 @@
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
         }
         
         .auth-header {
@@ -29,31 +30,95 @@
             margin-bottom: 30px;
         }
         
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
         .auth-header h1 {
-            margin-bottom: 10px;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .auth-header p {
+            color: var(--gray);
+        }
+        
+        .auth-form {
+            margin-bottom: 25px;
         }
         
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
         }
         
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
             border-radius: 8px;
             font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
         }
         
         .btn-full {
             width: 100%;
             justify-content: center;
+        }
+        
+        .demo-section {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .demo-account {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .demo-account:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .demo-account.active {
+            border-color: var(--primary);
+            background: #fef2f2;
+        }
+        
+        .password-note {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--gray);
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -61,19 +126,23 @@
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-fire-extinguisher"></i>
+                    <span>FISDMASA AttendTrack</span>
+                </div>
                 <h1>Welcome Back</h1>
                 <p>Sign in to your account</p>
             </div>
 
-            <form class="auth-form">
+            <form class="auth-form" id="loginForm">
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" required>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-full">
@@ -82,10 +151,227 @@
                 </button>
             </form>
 
-            <div style="text-align: center; margin-top: 20px;">
-                <p>Demo: Use any email/password</p>
+            <div class="demo-section">
+                <h3 style="margin-bottom: 15px; text-align: center;">
+                    <i class="fas fa-users"></i> Demo Accounts
+                </h3>
+                <p style="text-align: center; margin-bottom: 15px; color: var(--gray);">
+                    Click any account to auto-fill credentials<br>
+                    <strong>Password for all accounts: password</strong>
+                </p>
+                
+                <div class="demo-account" data-email="student@uenr.edu.gh" data-password="password">
+                    <strong><i class="fas fa-user-graduate"></i> Student Account</strong>
+                    <div style="color: var(--gray); font-size: 0.9rem;">student@uenr.edu.gh</div>
+                    <small>Access: Personal dashboard & QR scanning</small>
+                </div>
+                
+                <div class="demo-account" data-email="lecturer@uenr.edu.gh" data-password="password">
+                    <strong><i class="fas fa-chalkboard-teacher"></i> Lecturer Account</strong>
+                    <div style="color: var(--gray); font-size: 0.9rem;">lecturer@uenr.edu.gh</div>
+                    <small>Access: Course management & QR generation</small>
+                </div>
+                
+                <div class="demo-account" data-email="admin@uenr.edu.gh" data-password="password">
+                    <strong><i class="fas fa-cog"></i> Admin Account</strong>
+                    <div style="color: var(--gray); font-size: 0.9rem;">admin@uenr.edu.gh</div>
+                    <small>Access: System administration & reports</small>
+                </div>
+            </div>
+
+            <div class="password-note">
+                <i class="fas fa-info-circle"></i> All demo accounts use password: <strong>password</strong>
             </div>
         </div>
     </div>
+
+    <script>
+        // Mock Backend for Login Page
+        class MockBackend {
+            constructor() {
+                this.users = [
+                    {
+                        id: 1,
+                        name: "Kwame Student",
+                        email: "student@uenr.edu.gh",
+                        password: "password",
+                        role: "student",
+                        studentId: "FSDM2024001",
+                        department: "FSDM"
+                    },
+                    {
+                        id: 2,
+                        name: "Dr. Mensah",
+                        email: "lecturer@uenr.edu.gh", 
+                        password: "password",
+                        role: "lecturer",
+                        department: "FSDM"
+                    },
+                    {
+                        id: 3,
+                        name: "Admin User",
+                        email: "admin@uenr.edu.gh",
+                        password: "password",
+                        role: "admin",
+                        department: "FSDM"
+                    }
+                ];
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            async login(email, password) {
+                await this.delay(800);
+                
+                const user = this.users.find(u => u.email === email && u.password === password);
+                if (!user) {
+                    throw { error: 'Invalid credentials' };
+                }
+
+                // Create mock JWT token
+                const token = btoa(JSON.stringify({
+                    userId: user.id,
+                    email: user.email,
+                    role: user.role,
+                    name: user.name,
+                    studentId: user.studentId,
+                    exp: Date.now() + (24 * 60 * 60 * 1000)
+                }));
+                
+                return {
+                    message: 'Login successful',
+                    token,
+                    user: {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        studentId: user.studentId,
+                        department: user.department
+                    }
+                };
+            }
+        }
+
+        // Login functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const backend = new MockBackend();
+            
+            // Check if already logged in
+            const token = localStorage.getItem('authToken');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (token && user.role) {
+                // Redirect to appropriate dashboard
+                switch(user.role) {
+                    case 'student':
+                        window.location.href = 'student-dashboard.html';
+                        break;
+                    case 'lecturer':
+                        window.location.href = 'lecturer-dashboard.html';
+                        break;
+                    case 'admin':
+                        window.location.href = 'admin-dashboard.html';
+                        break;
+                }
+            }
+            
+            // Demo account click handlers
+            document.querySelectorAll('.demo-account').forEach(account => {
+                account.addEventListener('click', function() {
+                    const email = this.getAttribute('data-email');
+                    const password = this.getAttribute('data-password');
+                    
+                    document.getElementById('email').value = email;
+                    document.getElementById('password').value = password;
+                    
+                    // Visual feedback
+                    document.querySelectorAll('.demo-account').forEach(acc => {
+                        acc.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+            
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+
+                    if (!email || !password) {
+                        showNotification('Please enter both email and password', 'error');
+                        return;
+                    }
+
+                    // Show loading
+                    const submitBtn = loginForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+                    submitBtn.disabled = true;
+
+                    try {
+                        const result = await backend.login(email, password);
+                        
+                        // Save token and user data
+                        localStorage.setItem('authToken', result.token);
+                        localStorage.setItem('user', JSON.stringify(result.user));
+                        
+                        // Show success message
+                        submitBtn.innerHTML = '<i class="fas fa-check"></i> Success! Redirecting...';
+                        
+                        // Redirect based on role
+                        setTimeout(() => {
+                            switch(result.user.role) {
+                                case 'student':
+                                    window.location.href = 'student-dashboard.html';
+                                    break;
+                                case 'lecturer':
+                                    window.location.href = 'lecturer-dashboard.html';
+                                    break;
+                                case 'admin':
+                                    window.location.href = 'admin-dashboard.html';
+                                    break;
+                                default:
+                                    window.location.href = 'student-dashboard.html';
+                            }
+                        }, 1000);
+                    } catch (error) {
+                        showNotification(error.error || 'Login failed. Use demo accounts below.', 'error');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#dc2626' : '#0f766e';
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 10000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                max-width: 300px;
+            `;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info'}-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+    </script>
 </body>
 </html>
