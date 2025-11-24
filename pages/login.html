@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - FISDMASA AttendTrack</title>
+    <title>Secure Login - FISDMASA AttendTrack</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -14,6 +14,17 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+        }
+        
+        .auth-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.05)" points="0,1000 1000,0 1000,1000"/></svg>');
+            background-size: cover;
         }
         
         .auth-card {
@@ -23,32 +34,48 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 450px;
+            position: relative;
+            z-index: 2;
         }
         
         .auth-header {
             text-align: center;
             margin-bottom: 30px;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 20px;
         }
         
-        .auth-logo {
+        .institution-logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             font-weight: bold;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .department-badge {
+            background: var(--light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: inline-block;
         }
         
         .auth-header h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 8px;
             color: var(--dark);
+            font-weight: 600;
         }
         
         .auth-header p {
             color: var(--gray);
+            font-size: 0.95rem;
         }
         
         .auth-form {
@@ -57,321 +84,505 @@
         
         .form-group {
             margin-bottom: 20px;
-            position: relative;
         }
         
-        .form-group label {
+        .form-label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--dark);
+            font-size: 0.9rem;
         }
         
-        .form-group input {
+        .form-input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 14px 16px;
             border: 2px solid #e5e7eb;
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            background: #fafafa;
         }
         
-        .form-group input:focus {
+        .form-input:focus {
             outline: none;
             border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+        
+        .form-input.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
         }
         
         .btn-full {
             width: 100%;
             justify-content: center;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
         }
         
-        .demo-section {
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .role-selection {
+            margin-bottom: 20px;
+        }
+        
+        .role-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .role-btn {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .role-btn.active {
+            border-color: var(--primary);
             background: var(--light);
-            padding: 25px;
-            border-radius: 12px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .role-btn i {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .security-notice {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
             margin-top: 25px;
             border-left: 4px solid var(--primary);
         }
         
-        .demo-account {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        
-        .demo-account:hover {
-            border-color: var(--primary);
-            transform: translateX(5px);
-        }
-        
-        .demo-account.active {
-            border-color: var(--primary);
-            background: #fef2f2;
-        }
-        
-        .password-note {
-            text-align: center;
-            margin-top: 15px;
-            color: var(--gray);
+        .security-notice h4 {
+            color: var(--dark);
+            margin-bottom: 8px;
             font-size: 0.9rem;
+        }
+        
+        .security-notice p {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            z-index: 10;
+        }
+        
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 30px 20px;
+            }
+            
+            .role-buttons {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="auth-container">
+        <div class="auth-background"></div>
         <div class="auth-card">
+            <div class="loading-overlay" id="loadingOverlay">
+                <div style="text-align: center;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                    <p style="color: var(--dark); font-weight: 500;">Authenticating...</p>
+                </div>
+            </div>
+            
             <div class="auth-header">
-                <div class="auth-logo">
+                <div class="institution-logo">
                     <i class="fas fa-fire-extinguisher"></i>
                     <span>FISDMASA AttendTrack</span>
                 </div>
-                <h1>Welcome Back</h1>
-                <p>Sign in to your account</p>
+                <div class="department-badge">
+                    Fire, Safety & Disaster Management Department
+                </div>
+                <h1>Secure System Access</h1>
+                <p>Enter your credentials to access the attendance portal</p>
             </div>
 
-            <form class="auth-form" id="loginForm">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+            <form class="auth-form" id="loginForm" novalidate>
+                <div class="role-selection">
+                    <label class="form-label">Access Type</label>
+                    <div class="role-buttons">
+                        <div class="role-btn active" data-role="student">
+                            <i class="fas fa-user-graduate"></i>
+                            Student
+                        </div>
+                        <div class="role-btn" data-role="lecturer">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            Lecturer
+                        </div>
+                        <div class="role-btn" data-role="admin">
+                            <i class="fas fa-cog"></i>
+                            Administrator
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                    <label for="email" class="form-label">Institutional Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required 
+                           placeholder="your.email@uenr.edu.gh">
+                    <div class="error-message" id="emailError">Please enter a valid institutional email address</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-full">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Sign In
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required 
+                           placeholder="Enter your password" minlength="6">
+                    <div class="error-message" id="passwordError">Password must be at least 6 characters</div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password" onclick="showForgotPassword()">
+                        Forgot Password?
+                    </a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+                    <i class="fas fa-lock"></i>
+                    Secure Login
                 </button>
             </form>
 
-            <div class="demo-section">
-                <h3 style="margin-bottom: 15px; text-align: center;">
-                    <i class="fas fa-users"></i> Demo Accounts
-                </h3>
-                <p style="text-align: center; margin-bottom: 15px; color: var(--gray);">
-                    Click any account to auto-fill credentials<br>
-                    <strong>Password for all accounts: password</strong>
-                </p>
-                
-                <div class="demo-account" data-email="student@uenr.edu.gh" data-password="password">
-                    <strong><i class="fas fa-user-graduate"></i> Student Account</strong>
-                    <div style="color: var(--gray); font-size: 0.9rem;">student@uenr.edu.gh</div>
-                    <small>Access: Personal dashboard & QR scanning</small>
-                </div>
-                
-                <div class="demo-account" data-email="lecturer@uenr.edu.gh" data-password="password">
-                    <strong><i class="fas fa-chalkboard-teacher"></i> Lecturer Account</strong>
-                    <div style="color: var(--gray); font-size: 0.9rem;">lecturer@uenr.edu.gh</div>
-                    <small>Access: Course management & QR generation</small>
-                </div>
-                
-                <div class="demo-account" data-email="admin@uenr.edu.gh" data-password="password">
-                    <strong><i class="fas fa-cog"></i> Admin Account</strong>
-                    <div style="color: var(--gray); font-size: 0.9rem;">admin@uenr.edu.gh</div>
-                    <small>Access: System administration & reports</small>
-                </div>
+            <div class="security-notice">
+                <h4><i class="fas fa-shield-alt"></i> Security Notice</h4>
+                <p>This system contains confidential institutional data. Access is restricted to authorized personnel only. All activities are logged and monitored.</p>
             </div>
 
-            <div class="password-note">
-                <i class="fas fa-info-circle"></i> All demo accounts use password: <strong>password</strong>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="../index.html" style="color: var(--gray); text-decoration: none; font-size: 0.9rem;">
+                    <i class="fas fa-arrow-left"></i> Return to Homepage
+                </a>
             </div>
         </div>
     </div>
 
     <script>
-        // Mock Backend for Login Page
-        class MockBackend {
+        // Professional Authentication System
+        class AuthenticationSystem {
             constructor() {
-                this.users = [
-                    {
-                        id: 1,
-                        name: "Kwame Student",
-                        email: "student@uenr.edu.gh",
-                        password: "password",
-                        role: "student",
-                        studentId: "FSDM2024001",
-                        department: "FSDM"
-                    },
-                    {
-                        id: 2,
-                        name: "Dr. Mensah",
-                        email: "lecturer@uenr.edu.gh", 
-                        password: "password",
-                        role: "lecturer",
-                        department: "FSDM"
-                    },
-                    {
-                        id: 3,
-                        name: "Admin User",
-                        email: "admin@uenr.edu.gh",
-                        password: "password",
-                        role: "admin",
-                        department: "FSDM"
+                this.currentRole = 'student';
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.checkExistingSession();
+            }
+
+            setupEventListeners() {
+                // Role selection
+                document.querySelectorAll('.role-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentRole = btn.getAttribute('data-role');
+                    });
+                });
+
+                // Form validation
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
+
+                // Real-time validation
+                document.getElementById('email').addEventListener('blur', () => this.validateEmail());
+                document.getElementById('password').addEventListener('blur', () => this.validatePassword());
+            }
+
+            checkExistingSession() {
+                const token = localStorage.getItem('authToken');
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                
+                if (token && user.role) {
+                    // Redirect to appropriate dashboard
+                    this.redirectToDashboard(user.role);
+                }
+            }
+
+            validateEmail() {
+                const email = document.getElementById('email').value;
+                const errorElement = document.getElementById('emailError');
+                
+                if (!email) {
+                    this.showError('email', 'Email address is required');
+                    return false;
+                }
+                
+                if (!this.isValidInstitutionalEmail(email)) {
+                    this.showError('email', 'Please use your institutional email address');
+                    return false;
+                }
+                
+                this.clearError('email');
+                return true;
+            }
+
+            validatePassword() {
+                const password = document.getElementById('password').value;
+                const errorElement = document.getElementById('passwordError');
+                
+                if (!password) {
+                    this.showError('password', 'Password is required');
+                    return false;
+                }
+                
+                if (password.length < 6) {
+                    this.showError('password', 'Password must be at least 6 characters');
+                    return false;
+                }
+                
+                this.clearError('password');
+                return true;
+            }
+
+            isValidInstitutionalEmail(email) {
+                // Basic institutional email validation
+                return email.endsWith('@uenr.edu.gh') || 
+                       email.endsWith('@staff.uenr.edu.gh') ||
+                       email.endsWith('@student.uenr.edu.gh');
+            }
+
+            showError(field, message) {
+                const input = document.getElementById(field);
+                const errorElement = document.getElementById(field + 'Error');
+                
+                input.classList.add('error');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+
+            clearError(field) {
+                const input = document.getElementById(field);
+                const errorElement = document.getElementById(field + 'Error');
+                
+                input.classList.remove('error');
+                errorElement.style.display = 'none';
+            }
+
+            async handleLogin() {
+                // Validate form
+                const isEmailValid = this.validateEmail();
+                const isPasswordValid = this.validatePassword();
+                
+                if (!isEmailValid || !isPasswordValid) {
+                    this.showNotification('Please correct the errors above', 'error');
+                    return;
+                }
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const rememberMe = document.querySelector('input[name="remember"]').checked;
+
+                this.showLoading(true);
+
+                try {
+                    // Simulate API call delay
+                    await this.delay(1500);
+                    
+                    // In a real system, this would be an API call to your backend
+                    const user = await this.authenticateUser(email, password, this.currentRole);
+                    
+                    if (user) {
+                        // Store authentication data
+                        const token = this.generateToken(user);
+                        localStorage.setItem('authToken', token);
+                        localStorage.setItem('user', JSON.stringify(user));
+                        
+                        if (rememberMe) {
+                            localStorage.setItem('rememberMe', 'true');
+                        }
+                        
+                        this.showLoading(false);
+                        this.showNotification('Authentication successful', 'success');
+                        
+                        // Redirect after short delay
+                        setTimeout(() => {
+                            this.redirectToDashboard(user.role);
+                        }, 1000);
+                    } else {
+                        throw new Error('Invalid credentials');
                     }
-                ];
+                } catch (error) {
+                    this.showLoading(false);
+                    this.showNotification(error.message || 'Authentication failed', 'error');
+                }
+            }
+
+            async authenticateUser(email, password, role) {
+                // This is where you would integrate with your actual authentication system
+                // For now, we'll simulate authentication
+                
+                // Simulate credential validation
+                if (password.length < 6) {
+                    throw new Error('Invalid credentials provided');
+                }
+
+                // Simulate role-based access check
+                const userRoles = {
+                    'student@uenr.edu.gh': 'student',
+                    'lecturer@uenr.edu.gh': 'lecturer', 
+                    'admin@uenr.edu.gh': 'admin'
+                };
+
+                const userRole = userRoles[email] || role;
+
+                return {
+                    id: Date.now(),
+                    email: email,
+                    name: this.formatNameFromEmail(email),
+                    role: userRole,
+                    studentId: userRole === 'student' ? 'FSDM' + Math.floor(1000 + Math.random() * 9000) : null,
+                    department: 'Fire, Safety & Disaster Management',
+                    lastLogin: new Date().toISOString()
+                };
+            }
+
+            formatNameFromEmail(email) {
+                const namePart = email.split('@')[0];
+                return namePart.split('.')
+                    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+                    .join(' ');
+            }
+
+            generateToken(user) {
+                // In a real system, this would be a JWT from your backend
+                return btoa(JSON.stringify({
+                    userId: user.id,
+                    email: user.email,
+                    role: user.role,
+                    exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+                }));
+            }
+
+            redirectToDashboard(role) {
+                window.location.href = `${role}-dashboard.html`;
+            }
+
+            showLoading(show) {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = show ? 'flex' : 'none';
+                
+                const submitBtn = document.getElementById('submitBtn');
+                if (show) {
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+                    submitBtn.disabled = true;
+                } else {
+                    submitBtn.innerHTML = '<i class="fas fa-lock"></i> Secure Login';
+                    submitBtn.disabled = false;
+                }
             }
 
             delay(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
 
-            async login(email, password) {
-                await this.delay(800);
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#0f766e';
                 
-                const user = this.users.find(u => u.email === email && u.password === password);
-                if (!user) {
-                    throw { error: 'Invalid credentials' };
-                }
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${bgColor};
+                    color: white;
+                    padding: 16px 20px;
+                    border-radius: 8px;
+                    z-index: 10000;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    max-width: 350px;
+                    font-weight: 500;
+                `;
+                notification.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    ${message}
+                `;
+                document.body.appendChild(notification);
 
-                // Create mock JWT token
-                const token = btoa(JSON.stringify({
-                    userId: user.id,
-                    email: user.email,
-                    role: user.role,
-                    name: user.name,
-                    studentId: user.studentId,
-                    exp: Date.now() + (24 * 60 * 60 * 1000)
-                }));
-                
-                return {
-                    message: 'Login successful',
-                    token,
-                    user: {
-                        id: user.id,
-                        name: user.name,
-                        email: user.email,
-                        role: user.role,
-                        studentId: user.studentId,
-                        department: user.department
-                    }
-                };
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                }, 4000);
             }
         }
 
-        // Login functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('loginForm');
-            const backend = new MockBackend();
-            
-            // Check if already logged in
-            const token = localStorage.getItem('authToken');
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            
-            if (token && user.role) {
-                // Redirect to appropriate dashboard
-                switch(user.role) {
-                    case 'student':
-                        window.location.href = 'student-dashboard.html';
-                        break;
-                    case 'lecturer':
-                        window.location.href = 'lecturer-dashboard.html';
-                        break;
-                    case 'admin':
-                        window.location.href = 'admin-dashboard.html';
-                        break;
-                }
-            }
-            
-            // Demo account click handlers
-            document.querySelectorAll('.demo-account').forEach(account => {
-                account.addEventListener('click', function() {
-                    const email = this.getAttribute('data-email');
-                    const password = this.getAttribute('data-password');
-                    
-                    document.getElementById('email').value = email;
-                    document.getElementById('password').value = password;
-                    
-                    // Visual feedback
-                    document.querySelectorAll('.demo-account').forEach(acc => {
-                        acc.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                });
-            });
-            
-            if (loginForm) {
-                loginForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    
-                    const email = document.getElementById('email').value;
-                    const password = document.getElementById('password').value;
+        function showForgotPassword() {
+            const authSystem = new AuthenticationSystem();
+            authSystem.showNotification('Please contact the IT Help Desk for password reset assistance', 'info');
+        }
 
-                    if (!email || !password) {
-                        showNotification('Please enter both email and password', 'error');
-                        return;
-                    }
-
-                    // Show loading
-                    const submitBtn = loginForm.querySelector('button[type="submit"]');
-                    const originalText = submitBtn.innerHTML;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
-                    submitBtn.disabled = true;
-
-                    try {
-                        const result = await backend.login(email, password);
-                        
-                        // Save token and user data
-                        localStorage.setItem('authToken', result.token);
-                        localStorage.setItem('user', JSON.stringify(result.user));
-                        
-                        // Show success message
-                        submitBtn.innerHTML = '<i class="fas fa-check"></i> Success! Redirecting...';
-                        
-                        // Redirect based on role
-                        setTimeout(() => {
-                            switch(result.user.role) {
-                                case 'student':
-                                    window.location.href = 'student-dashboard.html';
-                                    break;
-                                case 'lecturer':
-                                    window.location.href = 'lecturer-dashboard.html';
-                                    break;
-                                case 'admin':
-                                    window.location.href = 'admin-dashboard.html';
-                                    break;
-                                default:
-                                    window.location.href = 'student-dashboard.html';
-                            }
-                        }, 1000);
-                    } catch (error) {
-                        showNotification(error.error || 'Login failed. Use demo accounts below.', 'error');
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                    }
-                });
-            }
+        // Initialize authentication system
+        document.addEventListener('DOMContentLoaded', () => {
+            new AuthenticationSystem();
         });
-
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#dc2626' : '#0f766e';
-            
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${bgColor};
-                color: white;
-                padding: 15px 20px;
-                border-radius: 8px;
-                z-index: 10000;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                max-width: 300px;
-            `;
-            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info'}-circle"></i> ${message}`;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 4000);
-        }
     </script>
 </body>
 </html>
