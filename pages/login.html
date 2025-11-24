@@ -281,9 +281,59 @@
             text-align: center;
         }
 
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            max-width: 300px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .notification.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .notification.info {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .notification.warning {
+            background: #f59e0b;
+            color: white;
+        }
+
         @media (max-width: 480px) {
             .auth-card {
                 padding: 30px 20px;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
             }
         }
     </style>
@@ -558,6 +608,78 @@
                 });
             }
 
+            setupValidation() {
+                // Real-time validation for all forms
+                const inputs = document.querySelectorAll('.form-input');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', (e) => this.validateField(e.target));
+                    input.addEventListener('input', (e) => this.clearError(e.target));
+                });
+
+                // Password confirmation validation
+                document.getElementById('registerPassword').addEventListener('input', (e) => {
+                    this.validatePasswordMatch();
+                });
+                document.getElementById('confirmPassword').addEventListener('input', (e) => {
+                    this.validatePasswordMatch();
+                });
+            }
+
+            validateField(field) {
+                const errorId = field.id + 'Error';
+                const errorElement = document.getElementById(errorId);
+                
+                if (!field.validity.valid) {
+                    field.classList.add('error');
+                    errorElement.style.display = 'block';
+                    
+                    if (field.validity.valueMissing) {
+                        errorElement.textContent = 'This field is required';
+                    } else if (field.validity.patternMismatch) {
+                        if (field.type === 'tel') {
+                            errorElement.textContent = 'Please enter a valid Ghanaian phone number';
+                        } else if (field.name === 'indexNumber') {
+                            errorElement.textContent = 'Please enter a valid 10-character Index Number';
+                        } else if (field.name === 'staffCode') {
+                            errorElement.textContent = '6-digit staff code required';
+                        } else if (field.name === 'securityKey') {
+                            errorElement.textContent = 'Valid security key required (ADMIN-XXXX)';
+                        }
+                    } else if (field.validity.tooShort) {
+                        errorElement.textContent = `Password must be at least ${field.minLength} characters`;
+                    }
+                    return false;
+                } else {
+                    this.clearError(field);
+                    return true;
+                }
+            }
+
+            validatePasswordMatch() {
+                const password = document.getElementById('registerPassword');
+                const confirmPassword = document.getElementById('confirmPassword');
+                const errorElement = document.getElementById('confirmPasswordError');
+                
+                if (confirmPassword.value && password.value !== confirmPassword.value) {
+                    confirmPassword.classList.add('error');
+                    errorElement.textContent = 'Passwords do not match';
+                    errorElement.style.display = 'block';
+                    return false;
+                } else {
+                    this.clearError(confirmPassword);
+                    return true;
+                }
+            }
+
+            clearError(field) {
+                field.classList.remove('error');
+                const errorId = field.id + 'Error';
+                const errorElement = document.getElementById(errorId);
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+            }
+
             setupSecretAdminAccess() {
                 // Secret key sequence for admin access (press A+D+M+I+N in sequence)
                 let keySequence = '';
@@ -631,15 +753,179 @@
                 this.showForm('login');
             }
 
-            // ... (Previous validation methods remain the same) ...
+            checkExistingSession() {
+                const token = localStorage.getItem('authToken');
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                
+                if (token && user.role) {
+                    this.showNotification(`Welcome back, ${user.name}! Redirecting...`, 'info');
+                    setTimeout(() => {
+                        switch(user.role) {
+                            case 'student':
+                                window.location.href = 'student-dashboard.html';
+                                break;
+                            case 'lecturer':
+                                window.location.href = 'lecturer-dashboard.html';
+                                break;
+                            case 'admin':
+                                window.location.href = 'admin-dashboard.html';
+                                break;
+                        }
+                    }, 2000);
+                }
+            }
 
-            // Student Authentication (from previous code)
+            loadExistingUsers() {
+                // Initialize sample student data if none exists
+                if (!localStorage.getItem('students')) {
+                    const sampleStudents = [
+                        {
+                            indexNumber: 'UEB3214567',
+                            name: 'John Mensah',
+                            phoneNumber: '+233201234567',
+                            password: 'student123',
+                            level: '300',
+                            department: 'FSDM',
+                            registeredAt: new Date().toISOString()
+                        },
+                        {
+                            indexNumber: 'UEB3214568',
+                            name: 'Alice Ofori',
+                            phoneNumber: '+233241234567',
+                            password: 'student123',
+                            level: '300',
+                            department: 'FSDM',
+                            registeredAt: new Date().toISOString()
+                        }
+                    ];
+                    localStorage.setItem('students', JSON.stringify(sampleStudents));
+                }
+            }
+
             async handleStudentLogin() {
-                // ... (same as before) ...
+                const indexNumber = document.getElementById('loginIndexNumber').value;
+                const password = document.getElementById('loginPassword').value;
+
+                if (!this.validateField(document.getElementById('loginIndexNumber')) || 
+                    !this.validateField(document.getElementById('loginPassword'))) {
+                    this.showNotification('Please fix the errors in the form', 'error');
+                    return;
+                }
+
+                this.showLoading(true, 'Authenticating student credentials...');
+
+                try {
+                    await this.delay(1500);
+                    
+                    const student = await this.authenticateStudent(indexNumber, password);
+                    
+                    if (student) {
+                        const token = this.generateToken(student);
+                        localStorage.setItem('authToken', token);
+                        localStorage.setItem('user', JSON.stringify(student));
+                        
+                        this.showLoading(false);
+                        this.showNotification('Login successful! Redirecting...', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'student-dashboard.html';
+                        }, 1500);
+                    } else {
+                        throw new Error('Invalid index number or password');
+                    }
+                } catch (error) {
+                    this.showLoading(false);
+                    this.showNotification(error.message, 'error');
+                }
+            }
+
+            async authenticateStudent(indexNumber, password) {
+                const students = JSON.parse(localStorage.getItem('students') || '[]');
+                const student = students.find(s => s.indexNumber === indexNumber && s.password === password);
+
+                if (!student) {
+                    throw new Error('Invalid credentials. Please check your index number and password.');
+                }
+
+                return {
+                    id: student.indexNumber,
+                    name: student.name,
+                    indexNumber: student.indexNumber,
+                    phoneNumber: student.phoneNumber,
+                    role: 'student',
+                    level: student.level,
+                    department: student.department,
+                    lastLogin: new Date().toISOString()
+                };
             }
 
             async handleStudentRegistration() {
-                // ... (same as before) ...
+                const fullName = document.getElementById('fullName').value;
+                const indexNumber = document.getElementById('registerIndexNumber').value;
+                const phoneNumber = document.getElementById('phoneNumber').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Validate all fields
+                const fields = ['fullName', 'registerIndexNumber', 'phoneNumber', 'registerPassword', 'confirmPassword'];
+                let isValid = true;
+                
+                fields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (!this.validateField(field)) {
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid || !this.validatePasswordMatch()) {
+                    this.showNotification('Please fix the errors in the form', 'error');
+                    return;
+                }
+
+                this.showLoading(true, 'Creating your student account...');
+
+                try {
+                    await this.delay(2000);
+                    
+                    const student = await this.registerStudent(fullName, indexNumber, phoneNumber, password);
+                    
+                    this.showLoading(false);
+                    this.showNotification('Account created successfully! Please login.', 'success');
+                    
+                    // Switch to login form
+                    setTimeout(() => {
+                        this.showForm('login');
+                        document.getElementById('loginIndexNumber').value = indexNumber;
+                    }, 2000);
+                } catch (error) {
+                    this.showLoading(false);
+                    this.showNotification(error.message, 'error');
+                }
+            }
+
+            async registerStudent(fullName, indexNumber, phoneNumber, password) {
+                const students = JSON.parse(localStorage.getItem('students') || '[]');
+                
+                // Check if student already exists
+                if (students.find(s => s.indexNumber === indexNumber)) {
+                    throw new Error('Student with this index number already exists');
+                }
+
+                // Create new student
+                const newStudent = {
+                    indexNumber: indexNumber,
+                    name: fullName,
+                    phoneNumber: phoneNumber,
+                    password: password,
+                    level: '300', // Default level
+                    department: 'FSDM',
+                    registeredAt: new Date().toISOString()
+                };
+
+                students.push(newStudent);
+                localStorage.setItem('students', JSON.stringify(students));
+
+                return newStudent;
             }
 
             // Lecturer Authentication
@@ -798,7 +1084,57 @@
                 };
             }
 
-            // ... (Previous helper methods remain the same) ...
+            // Helper Methods
+            generateToken(user) {
+                // In a real system, this would be a JWT from the server
+                return btoa(JSON.stringify({
+                    userId: user.id,
+                    role: user.role,
+                    timestamp: Date.now(),
+                    expires: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+                }));
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            showLoading(show, message = 'Processing...') {
+                const overlay = document.getElementById('loadingOverlay');
+                const loadingText = document.getElementById('loadingText');
+                
+                loadingText.textContent = message;
+                overlay.style.display = show ? 'flex' : 'none';
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <i class="fas fa-${this.getNotificationIcon(type)}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Show notification
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+            }
+
+            getNotificationIcon(type) {
+                switch(type) {
+                    case 'success': return 'check-circle';
+                    case 'error': return 'exclamation-circle';
+                    case 'warning': return 'exclamation-triangle';
+                    default: return 'info-circle';
+                }
+            }
         }
 
         // Global functions
