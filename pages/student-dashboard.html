@@ -27,6 +27,14 @@
             margin-bottom: 5px;
         }
         
+        .student-info {
+            background: var(--light);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
         .attendance-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -41,6 +49,11 @@
             text-align: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             border-left: 4px solid var(--primary);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
         
         .stat-number {
@@ -50,10 +63,16 @@
             margin-bottom: 10px;
         }
         
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
         
         .course-card {
@@ -61,6 +80,13 @@
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .course-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: var(--primary);
         }
         
         .course-header {
@@ -68,6 +94,18 @@
             justify-content: space-between;
             align-items: start;
             margin-bottom: 15px;
+        }
+        
+        .course-code {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .course-name {
+            color: var(--dark);
+            margin: 5px 0;
+            font-size: 1rem;
         }
         
         .attendance-bar {
@@ -90,9 +128,12 @@
         
         .attendance-percent {
             font-weight: bold;
-            padding: 5px 12px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .attendance-percent.good { background: #d1fae5; color: #065f46; }
@@ -101,47 +142,62 @@
         
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
         }
         
         .action-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 25px 20px;
             background: white;
             border-radius: 12px;
             text-decoration: none;
             color: var(--dark);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
         
         .action-btn:hover {
             transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
         
         .action-btn i {
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--primary);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .action-btn h3 {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .action-btn p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-align: center;
+            margin: 0;
         }
 
         .recent-attendance {
-            margin-top: 40px;
             background: white;
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 40px;
         }
 
         .attendance-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 15px 0;
             border-bottom: 1px solid #f3f4f6;
         }
 
@@ -150,14 +206,77 @@
         }
 
         .status-badge {
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .status-present { background: #d1fae5; color: #065f46; }
         .status-absent { background: #fef2f2; color: #dc2626; }
+        .status-late { background: #fef3c7; color: #92400e; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            flex-direction: column;
+        }
+
+        .course-lecturer {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .course-schedule {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .attendance-count {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -168,333 +287,217 @@
                 <span>FISDMASA AttendTrack</span>
             </div>
             <div class="nav-links">
-                <a href="../index.html">Home</a>
-                <a href="attendance-history.html">History</a>
+                <a href="attendance-history.html">Attendance History</a>
                 <span id="userWelcome">Welcome, Student!</span>
-                <a href="../index.html" class="login-btn logout-btn">Logout</a>
+                <a href="../index.html" class="login-btn logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
             </div>
         </div>
     </nav>
 
     <div class="dashboard">
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+            <h3 style="color: var(--dark); margin-bottom: 10px;">Loading Your Dashboard</h3>
+            <p style="color: var(--gray);">Preparing your attendance information...</p>
+        </div>
+
         <div class="dashboard-header">
             <div class="welcome-message">
-                <h1>Welcome back, Student!</h1>
-                <p>FSDM Level 300 • Student ID: Loading...</p>
+                <h1 id="studentName">Welcome, Student!</h1>
+                <div class="student-info">
+                    <strong>Index Number:</strong> <span id="studentIndex">Loading...</span> | 
+                    <strong>Level:</strong> <span id="studentLevel">Loading...</span> | 
+                    <strong>Department:</strong> FSDM
+                </div>
+                <p>Track your attendance and academic progress</p>
             </div>
             <a href="qr-scanner.html" class="btn btn-primary">
                 <i class="fas fa-qrcode"></i>
-                Scan QR Code
+                Scan Attendance QR
             </a>
         </div>
 
-        <div class="attendance-stats">
+        <!-- Attendance Statistics -->
+        <div class="attendance-stats" id="attendanceStats">
             <div class="stat-card">
-                <div class="stat-number">0%</div>
-                <p>Overall Attendance</p>
+                <div class="stat-number" id="overallAttendance">0%</div>
+                <div class="stat-label">Overall Attendance</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">0</div>
-                <p>Classes Attended</p>
+                <div class="stat-number" id="classesAttended">0</div>
+                <div class="stat-label">Classes Attended</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">0</div>
-                <p>Classes Missed</p>
+                <div class="stat-number" id="classesMissed">0</div>
+                <div class="stat-label">Classes Missed</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">0</div>
-                <p>Total Classes</p>
+                <div class="stat-number" id="totalClasses">0</div>
+                <div class="stat-label">Total Classes</div>
             </div>
         </div>
 
+        <!-- Courses Section -->
         <h2 style="margin-bottom: 20px;">Your Courses</h2>
         <div class="courses-grid" id="coursesGrid">
             <!-- Courses will be loaded dynamically -->
-            <div class="course-card">
-                <div class="course-header">
-                    <h3>Loading courses...</h3>
-                    <span class="attendance-percent">0%</span>
-                </div>
-                <p>Loading lecturer • Loading schedule</p>
-                <div class="attendance-bar">
-                    <div class="attendance-progress" style="width: 0%;"></div>
-                </div>
-                <p>0/0 classes attended</p>
-            </div>
         </div>
 
-        <div class="recent-attendance" id="recentAttendance" style="display: none;">
+        <!-- Recent Attendance -->
+        <div class="recent-attendance" id="recentAttendanceSection">
             <h2 style="margin-bottom: 20px;">Recent Attendance</h2>
             <div id="recentAttendanceList">
                 <!-- Recent attendance will be loaded here -->
             </div>
         </div>
 
+        <!-- Quick Actions -->
         <div class="quick-actions">
             <a href="qr-scanner.html" class="action-btn">
                 <i class="fas fa-qrcode"></i>
-                Scan QR
+                <h3>Scan QR Code</h3>
+                <p>Mark attendance for current class</p>
             </a>
             <a href="attendance-history.html" class="action-btn">
                 <i class="fas fa-history"></i>
-                History
+                <h3>Attendance History</h3>
+                <p>View detailed attendance records</p>
             </a>
-            <a href="#" class="action-btn" onclick="showNotification('Feature coming soon!')">
-                <i class="fas fa-chart-bar"></i>
-                Analytics
+            <a href="#" class="action-btn" onclick="showFeatureMessage('Course materials will be available soon')">
+                <i class="fas fa-book"></i>
+                <h3>Course Materials</h3>
+                <p>Access learning resources</p>
             </a>
-            <a href="#" class="action-btn" onclick="showNotification('Settings coming soon!')">
-                <i class="fas fa-cog"></i>
-                Settings
+            <a href="#" class="action-btn" onclick="showFeatureMessage('Timetable feature coming soon')">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Class Timetable</h3>
+                <p>View your schedule</p>
             </a>
         </div>
     </div>
 
     <script>
-        // Mock Backend functionality built into the page
-        class MockBackend {
-            constructor() {
-                this.init();
-            }
-
-            init() {
-                this.users = JSON.parse(localStorage.getItem('fisdmasa_users')) || this.getDefaultUsers();
-                this.courses = JSON.parse(localStorage.getItem('fisdmasa_courses')) || this.getDefaultCourses();
-                this.attendanceRecords = JSON.parse(localStorage.getItem('fisdmasa_records')) || this.getDefaultRecords();
-                this.attendanceSessions = JSON.parse(localStorage.getItem('fisdmasa_sessions')) || [];
-            }
-
-            getDefaultUsers() {
-                return [
-                    {
-                        id: 1,
-                        name: "Kwame Student",
-                        email: "student@uenr.edu.gh",
-                        password: "password",
-                        role: "student",
-                        studentId: "FSDM2024001",
-                        department: "FSDM"
-                    }
-                ];
-            }
-
-            getDefaultCourses() {
-                return [
-                    {
-                        id: 1,
-                        courseCode: "FSDM 301",
-                        courseName: "Fire Dynamics",
-                        lecturer: 2,
-                        students: [1],
-                        schedule: "Mon, Wed 8:00 AM"
-                    },
-                    {
-                        id: 2, 
-                        courseCode: "FSDM 303",
-                        courseName: "Disaster Management",
-                        lecturer: 2,
-                        students: [1],
-                        schedule: "Tue, Thu 10:00 AM"
-                    },
-                    {
-                        id: 3,
-                        courseCode: "FSDM 305", 
-                        courseName: "Safety Engineering",
-                        lecturer: 2,
-                        students: [1],
-                        schedule: "Fri 2:00 PM"
-                    }
-                ];
-            }
-
-            getDefaultRecords() {
-                return [
-                    { id: 1, session: 1, student: 1, timestamp: new Date('2024-03-18T08:00:00'), status: "present", courseId: 1 },
-                    { id: 2, session: 2, student: 1, timestamp: new Date('2024-03-19T10:00:00'), status: "present", courseId: 2 },
-                    { id: 3, session: 3, student: 1, timestamp: new Date('2024-03-22T14:00:00'), status: "absent", courseId: 3 },
-                    { id: 4, session: 4, student: 1, timestamp: new Date('2024-03-25T08:00:00'), status: "present", courseId: 1 },
-                    { id: 5, session: 5, student: 1, timestamp: new Date('2024-03-26T10:00:00'), status: "present", courseId: 2 }
-                ];
-            }
-
-            delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-
-            validateToken(token) {
-                try {
-                    const userData = JSON.parse(atob(token));
-                    if (userData.exp < Date.now()) {
-                        throw new Error('Token expired');
-                    }
-                    return userData;
-                } catch (error) {
-                    throw { error: 'Invalid token' };
-                }
-            }
-
-            async getStudentDashboard(token) {
-                await this.delay(800);
-                
-                const userData = this.validateToken(token);
-                const studentId = userData.userId;
-
-                const studentCourses = this.courses.filter(course => 
-                    course.students.includes(studentId)
-                );
-
-                const studentRecords = this.attendanceRecords.filter(record => 
-                    record.student === studentId
-                );
-
-                const totalClasses = studentRecords.length;
-                const presentClasses = studentRecords.filter(record => record.status === 'present').length;
-                const overallAttendance = totalClasses > 0 ? (presentClasses / totalClasses) * 100 : 0;
-
-                const courseStats = studentCourses.map(course => {
-                    const courseRecords = studentRecords.filter(record => record.courseId === course.id);
-                    const courseTotal = courseRecords.length;
-                    const coursePresent = courseRecords.filter(record => record.status === 'present').length;
-                    const courseAttendance = courseTotal > 0 ? (coursePresent / courseTotal) * 100 : 0;
-
-                    const lecturer = this.users.find(u => u.id === course.lecturer);
-
-                    return {
-                        courseId: course.id,
-                        courseCode: course.courseCode,
-                        courseName: course.courseName,
-                        lecturer: lecturer ? lecturer.name : 'Dr. Mensah',
-                        schedule: course.schedule,
-                        attendance: Math.round(courseAttendance),
-                        attended: coursePresent,
-                        total: courseTotal
-                    };
-                });
-
-                const recentAttendance = studentRecords
-                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                    .slice(0, 5)
-                    .map(record => {
-                        const course = this.courses.find(c => c.id === record.courseId);
-                        return {
-                            date: new Date(record.timestamp).toLocaleDateString(),
-                            course: course ? course.courseCode : 'Unknown',
-                            status: record.status,
-                            time: new Date(record.timestamp).toLocaleTimeString()
-                        };
-                    });
-
-                return {
-                    student: {
-                        name: userData.name,
-                        studentId: userData.studentId,
-                        department: userData.department
-                    },
-                    statistics: {
-                        overallAttendance: Math.round(overallAttendance),
-                        classesAttended: presentClasses,
-                        classesMissed: totalClasses - presentClasses,
-                        totalClasses: totalClasses
-                    },
-                    courses: courseStats,
-                    recentAttendance: recentAttendance
-                };
-            }
-        }
-
-        // Student Dashboard Class
+        // Professional Student Dashboard System
         class StudentDashboard {
             constructor() {
                 this.token = localStorage.getItem('authToken');
                 this.user = JSON.parse(localStorage.getItem('user') || '{}');
-                this.backend = new MockBackend();
+                this.attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords') || '[]');
                 this.init();
             }
 
-            async init() {
-                if (!this.token) {
+            init() {
+                if (!this.token || this.user.role !== 'student') {
                     window.location.href = 'login.html';
                     return;
                 }
 
-                this.showLoading();
-                await this.loadDashboardData();
+                this.showLoading(true);
+                this.loadDashboardData();
                 this.setupEventListeners();
             }
 
-            async loadDashboardData() {
-                try {
-                    const data = await this.backend.getStudentDashboard(this.token);
-                    this.hideLoading();
-                    this.updateDashboard(data);
-                } catch (error) {
-                    console.error('Error loading dashboard:', error);
-                    this.hideLoading();
-                    this.showError(error.error || 'Failed to load dashboard data');
-                    
-                    if (error.error === 'Invalid token') {
-                        setTimeout(() => {
-                            this.logout();
-                        }, 2000);
-                    }
-                }
+            loadDashboardData() {
+                // Simulate API call delay
+                setTimeout(() => {
+                    this.updateUserInfo();
+                    this.loadCourses();
+                    this.calculateStatistics();
+                    this.loadRecentAttendance();
+                    this.showLoading(false);
+                }, 1500);
             }
 
-            updateDashboard(data) {
-                // Update welcome message
-                document.querySelector('.welcome-message h1').textContent = `Welcome back, ${data.student.name}!`;
-                document.querySelector('.welcome-message p').textContent = `${data.student.department} • Student ID: ${data.student.studentId}`;
-                document.getElementById('userWelcome').textContent = `Welcome, ${data.student.name.split(' ')[0]}!`;
-
-                // Update statistics
-                this.updateStatistics(data.statistics);
-                
-                // Update courses
-                this.renderCourses(data.courses);
-                
-                // Update recent attendance
-                this.renderRecentAttendance(data.recentAttendance);
+            updateUserInfo() {
+                document.getElementById('studentName').textContent = `Welcome, ${this.user.name}!`;
+                document.getElementById('studentIndex').textContent = this.user.indexNumber;
+                document.getElementById('studentLevel').textContent = this.user.level;
+                document.getElementById('userWelcome').textContent = `Welcome, ${this.user.name.split(' ')[0]}!`;
             }
 
-            updateStatistics(stats) {
-                const statNumbers = document.querySelectorAll('.stat-card .stat-number');
-                if (statNumbers.length >= 4) {
-                    statNumbers[0].textContent = `${stats.overallAttendance}%`;
-                    statNumbers[1].textContent = stats.classesAttended;
-                    statNumbers[2].textContent = stats.classesMissed;
-                    statNumbers[3].textContent = stats.totalClasses;
-                }
-            }
-
-            renderCourses(courses) {
+            loadCourses() {
                 const coursesGrid = document.getElementById('coursesGrid');
-                if (!coursesGrid) return;
                 
+                // FSDM Course Data
+                const fsdmCourses = [
+                    {
+                        code: 'FSDM 301',
+                        name: 'Fire Dynamics and Modeling',
+                        lecturer: 'Dr. A. Mensah',
+                        schedule: 'Mon, Wed • 8:00 - 10:00 AM',
+                        credits: 3,
+                        color: '#dc2626'
+                    },
+                    {
+                        code: 'FSDM 303', 
+                        name: 'Disaster Risk Management',
+                        lecturer: 'Dr. K. Owusu',
+                        schedule: 'Tue, Thu • 10:00 - 12:00 PM',
+                        credits: 3,
+                        color: '#0f766e'
+                    },
+                    {
+                        code: 'FSDM 305',
+                        name: 'Safety Engineering Principles',
+                        lecturer: 'Prof. E. Asante',
+                        schedule: 'Fri • 2:00 - 4:00 PM', 
+                        credits: 2,
+                        color: '#1f2937'
+                    },
+                    {
+                        code: 'FSDM 307',
+                        name: 'Emergency Response Planning',
+                        lecturer: 'Dr. S. Appiah',
+                        schedule: 'Mon • 2:00 - 4:00 PM',
+                        credits: 2,
+                        color: '#7c2d12'
+                    }
+                ];
+
                 coursesGrid.innerHTML = '';
 
-                courses.forEach(course => {
-                    const statusClass = course.attendance >= 80 ? 'good' : course.attendance >= 70 ? 'warning' : 'danger';
-
+                fsdmCourses.forEach(course => {
+                    const courseAttendance = this.calculateCourseAttendance(course.code);
+                    const statusClass = this.getAttendanceStatus(courseAttendance);
+                    
                     const courseCard = `
                         <div class="course-card">
                             <div class="course-header">
                                 <div>
-                                    <h3>${course.courseCode}</h3>
-                                    <p style="color: #6b7280; margin: 0; font-size: 0.9rem;">${course.courseName}</p>
+                                    <div class="course-code">${course.code}</div>
+                                    <div class="course-name">${course.name}</div>
+                                    <div class="course-lecturer">
+                                        <i class="fas fa-chalkboard-teacher"></i> ${course.lecturer}
+                                    </div>
+                                    <div class="course-schedule">
+                                        <i class="fas fa-clock"></i> ${course.schedule}
+                                    </div>
                                 </div>
-                                <span class="attendance-percent ${statusClass}">${course.attendance}%</span>
+                                <span class="attendance-percent ${statusClass}">
+                                    <i class="fas ${this.getStatusIcon(statusClass)}"></i>
+                                    ${courseAttendance}%
+                                </span>
                             </div>
-                            <p><i class="fas fa-chalkboard-teacher"></i> ${course.lecturer}</p>
-                            <p><i class="fas fa-clock"></i> ${course.schedule}</p>
+                            
                             <div class="attendance-bar">
-                                <div class="attendance-progress ${statusClass}" style="width: ${course.attendance}%;"></div>
+                                <div class="attendance-progress ${statusClass}" style="width: ${courseAttendance}%;"></div>
                             </div>
-                            <p><i class="fas fa-calendar-check"></i> ${course.attended}/${course.total} classes attended</p>
-                            ${course.attendance < 75 ? 
-                                '<div style="background: #fef2f2; padding: 8px; border-radius: 6px; margin-top: 10px; border-left: 3px solid #dc2626;">' +
-                                '<i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>' +
-                                '<small style="color: #dc2626; margin-left: 5px; font-weight: 500;">Low attendance - aim for 75% or higher</small>' +
-                                '</div>' : 
+                            
+                            <div class="attendance-count">
+                                <i class="fas fa-calendar-check"></i> 
+                                ${this.getAttendedClasses(course.code)}/${this.getTotalClasses(course.code)} classes attended
+                            </div>
+                            
+                            ${courseAttendance < 75 ? 
+                                `<div style="background: #fef2f2; padding: 10px; border-radius: 6px; margin-top: 10px; border-left: 3px solid #dc2626;">
+                                    <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
+                                    <small style="color: #dc2626; margin-left: 5px; font-weight: 500;">
+                                        Attendance below 75% - Consult your lecturer
+                                    </small>
+                                </div>` : 
                                 ''
                             }
                         </div>
@@ -503,40 +506,147 @@
                 });
             }
 
-            renderRecentAttendance(recentAttendance) {
-                const recentSection = document.getElementById('recentAttendance');
+            calculateCourseAttendance(courseCode) {
+                const courseRecords = this.attendanceRecords.filter(record => 
+                    record.course === courseCode && record.indexNumber === this.user.indexNumber
+                );
+                
+                const totalClasses = this.getTotalClasses(courseCode);
+                const attendedClasses = courseRecords.filter(record => record.status === 'present').length;
+                
+                return totalClasses > 0 ? Math.round((attendedClasses / totalClasses) * 100) : 0;
+            }
+
+            getTotalClasses(courseCode) {
+                // Simulate total classes based on course schedule
+                const baseClasses = {
+                    'FSDM 301': 24, // Mon, Wed for 12 weeks
+                    'FSDM 303': 24, // Tue, Thu for 12 weeks  
+                    'FSDM 305': 12, // Fri for 12 weeks
+                    'FSDM 307': 12  // Mon for 12 weeks
+                };
+                return baseClasses[courseCode] || 0;
+            }
+
+            getAttendedClasses(courseCode) {
+                const courseRecords = this.attendanceRecords.filter(record => 
+                    record.course === courseCode && 
+                    record.indexNumber === this.user.indexNumber &&
+                    record.status === 'present'
+                );
+                return courseRecords.length;
+            }
+
+            calculateStatistics() {
+                const allRecords = this.attendanceRecords.filter(record => 
+                    record.indexNumber === this.user.indexNumber
+                );
+                
+                const totalClasses = this.getTotalClasses('FSDM 301') + this.getTotalClasses('FSDM 303') + 
+                                   this.getTotalClasses('FSDM 305') + this.getTotalClasses('FSDM 307');
+                const attendedClasses = allRecords.filter(record => record.status === 'present').length;
+                const missedClasses = totalClasses - attendedClasses;
+                const overallAttendance = totalClasses > 0 ? Math.round((attendedClasses / totalClasses) * 100) : 0;
+
+                document.getElementById('overallAttendance').textContent = `${overallAttendance}%`;
+                document.getElementById('classesAttended').textContent = attendedClasses;
+                document.getElementById('classesMissed').textContent = missedClasses;
+                document.getElementById('totalClasses').textContent = totalClasses;
+
+                // Update stat card colors based on attendance
+                this.updateStatCards(overallAttendance);
+            }
+
+            updateStatCards(attendance) {
+                const statCards = document.querySelectorAll('.stat-card');
+                const statusClass = this.getAttendanceStatus(attendance);
+                
+                statCards.forEach(card => {
+                    card.style.borderLeftColor = this.getStatusColor(statusClass);
+                });
+            }
+
+            loadRecentAttendance() {
+                const recentSection = document.getElementById('recentAttendanceSection');
                 const recentList = document.getElementById('recentAttendanceList');
                 
-                if (recentAttendance.length > 0) {
-                    recentSection.style.display = 'block';
-                    recentList.innerHTML = '';
-                    
-                    recentAttendance.forEach(record => {
-                        const item = document.createElement('div');
-                        item.className = 'attendance-item';
-                        item.innerHTML = `
-                            <div>
-                                <strong>${record.course}</strong>
-                                <div style="color: #6b7280; font-size: 0.9rem;">${record.date} at ${record.time}</div>
+                const studentRecords = this.attendanceRecords
+                    .filter(record => record.indexNumber === this.user.indexNumber)
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .slice(0, 5);
+
+                if (studentRecords.length === 0) {
+                    recentList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-times"></i>
+                            <h3>No Attendance Records</h3>
+                            <p>Your attendance records will appear here once you start scanning QR codes in class.</p>
+                            <a href="qr-scanner.html" class="btn btn-primary" style="margin-top: 15px;">
+                                <i class="fas fa-qrcode"></i> Scan Your First QR Code
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                recentList.innerHTML = '';
+                
+                studentRecords.forEach(record => {
+                    const item = document.createElement('div');
+                    item.className = 'attendance-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong>${record.course}</strong>
+                            <div style="color: #6b7280; font-size: 0.9rem;">
+                                ${new Date(record.timestamp).toLocaleDateString('en-US', { 
+                                    weekday: 'short', 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                })} at ${new Date(record.timestamp).toLocaleTimeString()}
                             </div>
-                            <span class="status-badge ${record.status === 'present' ? 'status-present' : 'status-absent'}">
-                                ${record.status === 'present' ? 'Present ✓' : 'Absent ✗'}
-                            </span>
-                        `;
-                        recentList.appendChild(item);
-                    });
+                        </div>
+                        <span class="status-badge ${record.status === 'present' ? 'status-present' : 'status-absent'}">
+                            <i class="fas ${record.status === 'present' ? 'fa-check' : 'fa-times'}"></i>
+                            ${record.status === 'present' ? 'Present' : 'Absent'}
+                        </span>
+                    `;
+                    recentList.appendChild(item);
+                });
+            }
+
+            getAttendanceStatus(percentage) {
+                if (percentage >= 80) return 'good';
+                if (percentage >= 70) return 'warning';
+                return 'danger';
+            }
+
+            getStatusIcon(statusClass) {
+                switch(statusClass) {
+                    case 'good': return 'fa-check-circle';
+                    case 'warning': return 'fa-exclamation-circle';
+                    case 'danger': return 'fa-exclamation-triangle';
+                    default: return 'fa-info-circle';
+                }
+            }
+
+            getStatusColor(statusClass) {
+                switch(statusClass) {
+                    case 'good': return '#10b981';
+                    case 'warning': return '#f59e0b';
+                    case 'danger': return '#ef4444';
+                    default: return '#6b7280';
                 }
             }
 
             setupEventListeners() {
                 // Logout button
-                const logoutBtn = document.querySelector('.logout-btn');
-                if (logoutBtn) {
-                    logoutBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.logout();
-                    });
-                }
+                document.querySelector('.logout-btn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.logout();
+                });
+
+                // Refresh button (could be added later)
             }
 
             logout() {
@@ -545,51 +655,13 @@
                 window.location.href = '../index.html';
             }
 
-            showLoading() {
-                const loadingDiv = document.createElement('div');
-                loadingDiv.id = 'loadingIndicator';
-                loadingDiv.innerHTML = `
-                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px;"></i>
-                        <h3 style="color: #1f2937; margin-bottom: 10px;">Loading Dashboard</h3>
-                        <p style="color: #6b7280;">Fetching your attendance data...</p>
-                    </div>
-                `;
-                document.body.appendChild(loadingDiv);
-            }
-
-            hideLoading() {
-                const loadingDiv = document.getElementById('loadingIndicator');
-                if (loadingDiv) {
-                    loadingDiv.remove();
-                }
-            }
-
-            showError(message) {
-                const errorDiv = document.createElement('div');
-                errorDiv.style.cssText = `
-                    position: fixed;
-                    top: 100px;
-                    right: 20px;
-                    background: #dc2626;
-                    color: white;
-                    padding: 15px 20px;
-                    border-radius: 8px;
-                    z-index: 10000;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                    max-width: 300px;
-                `;
-                errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
-                document.body.appendChild(errorDiv);
-
-                setTimeout(() => {
-                    errorDiv.remove();
-                }, 5000);
+            showLoading(show) {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = show ? 'flex' : 'none';
             }
         }
 
-        // Utility function for notifications
-        function showNotification(message) {
+        function showFeatureMessage(message) {
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
@@ -597,21 +669,24 @@
                 right: 20px;
                 background: #0f766e;
                 color: white;
-                padding: 15px 20px;
+                padding: 16px 20px;
                 border-radius: 8px;
                 z-index: 10000;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
                 max-width: 300px;
+                font-weight: 500;
             `;
             notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
             document.body.appendChild(notification);
 
             setTimeout(() => {
-                notification.remove();
+                notification.style.transform = 'translateX(100%)';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
 
-        // Initialize dashboard when page loads
+        // Initialize dashboard
         document.addEventListener('DOMContentLoaded', () => {
             new StudentDashboard();
         });
