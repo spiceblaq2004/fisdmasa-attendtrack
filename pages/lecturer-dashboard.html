@@ -29,10 +29,13 @@
             text-decoration: none;
             color: var(--dark);
             transition: transform 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
         }
         
         .action-card:hover {
             transform: translateY(-5px);
+            border-color: var(--primary);
         }
         
         .action-card i {
@@ -51,7 +54,7 @@
         
         .session-item {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             padding: 15px 0;
             border-bottom: 1px solid #e5e7eb;
@@ -59,6 +62,37 @@
         
         .session-item:last-child {
             border-bottom: none;
+        }
+        
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .qr-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .qr-display {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre;
         }
     </style>
 </head>
@@ -71,8 +105,8 @@
             </div>
             <div class="nav-links">
                 <a href="../index.html">Home</a>
-                <span>Welcome, Dr. Mensah!</span>
-                <a href="../index.html" class="login-btn">Logout</a>
+                <span id="userWelcome">Welcome, Lecturer!</span>
+                <a href="../index.html" class="login-btn logout-btn">Logout</a>
             </div>
         </div>
     </nav>
@@ -86,29 +120,29 @@
         </div>
 
         <div class="lecturer-actions">
-            <a href="#" class="action-card" id="generateQR">
+            <div class="action-card" id="generateQRBtn">
                 <i class="fas fa-qrcode"></i>
                 <h3>Generate QR Code</h3>
                 <p>Create attendance session</p>
-            </a>
+            </div>
             
-            <a href="#" class="action-card">
+            <div class="action-card" onclick="showNotification('Student management coming soon!')">
                 <i class="fas fa-users"></i>
                 <h3>Manage Students</h3>
                 <p>View class lists</p>
-            </a>
+            </div>
             
-            <a href="#" class="action-card">
+            <div class="action-card" onclick="showNotification('Reports coming soon!')">
                 <i class="fas fa-chart-bar"></i>
                 <h3>View Reports</h3>
                 <p>Attendance analytics</p>
-            </a>
+            </div>
             
-            <a href="#" class="action-card">
+            <div class="action-card" onclick="showNotification('Export feature coming soon!')">
                 <i class="fas fa-download"></i>
                 <h3>Export Data</h3>
                 <p>Download reports</p>
-            </a>
+            </div>
         </div>
 
         <div class="today-sessions">
@@ -120,7 +154,7 @@
                     <p>8:00 AM - 10:00 AM • Lecture Hall A</p>
                 </div>
                 <div>
-                    <span class="btn btn-primary">Start Attendance</span>
+                    <button class="btn btn-primary" onclick="generateQRCode(1)">Start Attendance</button>
                 </div>
             </div>
             
@@ -130,7 +164,7 @@
                     <p>2:00 PM - 4:00 PM • Lab 3</p>
                 </div>
                 <div>
-                    <span class="btn">View Report</span>
+                    <button class="btn" onclick="showNotification('Session report coming soon!')">View Report</button>
                 </div>
             </div>
         </div>
@@ -143,10 +177,10 @@
                 <div class="attendance-bar">
                     <div class="attendance-progress" style="width: 88%; background: #10b981;"></div>
                 </div>
-                <p>Class Average: 88%</p>
+                <p>Class Average: 88% • 40/45 students present</p>
                 <div style="margin-top: 15px;">
-                    <button class="btn btn-primary">Manage</button>
-                    <button class="btn">Reports</button>
+                    <button class="btn btn-primary" onclick="generateQRCode(1)">Start Attendance</button>
+                    <button class="btn" onclick="showNotification('Course reports coming soon!')">View Report</button>
                 </div>
             </div>
             
@@ -156,15 +190,311 @@
                 <div class="attendance-bar">
                     <div class="attendance-progress" style="width: 75%; background: #f59e0b;"></div>
                 </div>
-                <p>Class Average: 75%</p>
+                <p>Class Average: 75% • 28/38 students present</p>
                 <div style="margin-top: 15px;">
-                    <button class="btn btn-primary">Manage</button>
-                    <button class="btn">Reports</button>
+                    <button class="btn btn-primary" onclick="generateQRCode(2)">Start Attendance</button>
+                    <button class="btn" onclick="showNotification('Course reports coming soon!')">View Report</button>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <h3>FSDM 305: Safety Engineering</h3>
+                <p>32 Students • Fri 2:00 PM</p>
+                <div class="attendance-bar">
+                    <div class="attendance-progress" style="width: 92%; background: #10b981;"></div>
+                </div>
+                <p>Class Average: 92% • 30/32 students present</p>
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-primary" onclick="generateQRCode(3)">Start Attendance</button>
+                    <button class="btn" onclick="showNotification('Course reports coming soon!')">View Report</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="../js/lecturer-dashboard.js"></script>
+    <!-- QR Code Modal -->
+    <div class="qr-modal" id="qrModal">
+        <div class="qr-modal-content">
+            <h2>Attendance QR Code</h2>
+            <p>Students should scan this code to mark attendance</p>
+            
+            <div class="qr-display" id="qrCodeDisplay">
+                ┌──────────────────┐
+                │  FISDMASA QR     │
+                │                  │
+                │  ██████████████  │
+                │  ██          ██  │
+                │  ██  ██████  ██  │
+                │  ██  ██████  ██  │
+                │  ██          ██  │
+                │  ██████████████  │
+                │                  │
+                │  Loading...      │
+                └──────────────────┘
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <strong>Course:</strong> <span id="qrCourseName">Loading...</span><br>
+                <strong>Code:</strong> <span id="qrCodeText">Loading...</span><br>
+                <strong>Valid for:</strong> 15 minutes
+            </div>
+            
+            <button class="btn btn-primary" onclick="closeQRModal()">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Mock Backend for Lecturer
+        class LecturerBackend {
+            constructor() {
+                this.courses = [
+                    {
+                        id: 1,
+                        courseCode: "FSDM 301",
+                        courseName: "Fire Dynamics",
+                        lecturer: 2,
+                        students: [1],
+                        schedule: "Mon, Wed 8:00 AM"
+                    },
+                    {
+                        id: 2, 
+                        courseCode: "FSDM 303",
+                        courseName: "Disaster Management",
+                        lecturer: 2,
+                        students: [1],
+                        schedule: "Tue, Thu 10:00 AM"
+                    },
+                    {
+                        id: 3,
+                        courseCode: "FSDM 305", 
+                        courseName: "Safety Engineering",
+                        lecturer: 2,
+                        students: [1],
+                        schedule: "Fri 2:00 PM"
+                    }
+                ];
+                this.sessions = [];
+                this.sessionCounter = 100;
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            validateToken(token) {
+                try {
+                    const userData = JSON.parse(atob(token));
+                    if (userData.exp < Date.now()) {
+                        throw new Error('Token expired');
+                    }
+                    return userData;
+                } catch (error) {
+                    throw { error: 'Invalid token' };
+                }
+            }
+
+            async generateQRSession(token, courseId) {
+                await this.delay(500);
+                
+                const userData = this.validateToken(token);
+                if (userData.role !== 'lecturer') {
+                    throw { error: 'Only lecturers can create sessions' };
+                }
+
+                const session = {
+                    id: this.sessionCounter++,
+                    courseId: parseInt(courseId),
+                    lecturer: userData.userId,
+                    date: new Date(),
+                    qrCode: `FISDMA-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    isActive: true,
+                    duration: 15,
+                    createdAt: new Date()
+                };
+
+                this.sessions.push(session);
+
+                const course = this.courses.find(c => c.id === session.courseId);
+
+                return {
+                    session: session,
+                    course: course,
+                    qrImage: this.generateQRImage(session.qrCode),
+                    message: 'Attendance session created successfully'
+                };
+            }
+
+            generateQRImage(qrCode) {
+                return `
+┌──────────────────┐
+│  FISDMASA QR     │
+│                  │
+│  ██████████████  │
+│  ██          ██  │
+│  ██  ██████  ██  │
+│  ██  ██████  ██  │
+│  ██          ██  │
+│  ██████████████  │
+│                  │
+│  ${qrCode.substr(0, 8)}  │
+└──────────────────┘
+                `;
+            }
+        }
+
+        // Lecturer Dashboard functionality
+        class LecturerDashboard {
+            constructor() {
+                this.token = localStorage.getItem('authToken');
+                this.user = JSON.parse(localStorage.getItem('user') || '{}');
+                this.backend = new LecturerBackend();
+                this.init();
+            }
+
+            async init() {
+                if (!this.token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (this.user.role !== 'lecturer') {
+                    this.showError('Access denied. Lecturer account required.');
+                    setTimeout(() => {
+                        this.logout();
+                    }, 3000);
+                    return;
+                }
+
+                this.updateWelcomeMessage();
+                this.setupEventListeners();
+            }
+
+            updateWelcomeMessage() {
+                document.getElementById('userWelcome').textContent = `Welcome, ${this.user.name.split(' ')[0]}!`;
+            }
+
+            setupEventListeners() {
+                // Generate QR button
+                document.getElementById('generateQRBtn').addEventListener('click', () => {
+                    this.showCourseSelection();
+                });
+
+                // Logout button
+                document.querySelector('.logout-btn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.logout();
+                });
+            }
+
+            showCourseSelection() {
+                const courseList = this.backend.courses.map(course => 
+                    `<option value="${course.id}">${course.courseCode}: ${course.courseName}</option>`
+                ).join('');
+
+                const selection = prompt(
+                    'Select a course to generate QR code:\n\n' +
+                    this.backend.courses.map(course => 
+                        `${course.id}. ${course.courseCode}: ${course.courseName}`
+                    ).join('\n') +
+                    '\n\nEnter course number:'
+                );
+
+                if (selection && ['1','2','3'].includes(selection)) {
+                    this.generateQRCode(parseInt(selection));
+                }
+            }
+
+            async generateQRCode(courseId) {
+                try {
+                    const result = await this.backend.generateQRSession(this.token, courseId);
+                    this.showQRModal(result);
+                } catch (error) {
+                    this.showError(error.error || 'Failed to generate QR code');
+                }
+            }
+
+            showQRModal(result) {
+                document.getElementById('qrCourseName').textContent = 
+                    `${result.course.courseCode}: ${result.course.courseName}`;
+                document.getElementById('qrCodeText').textContent = result.session.qrCode;
+                document.getElementById('qrCodeDisplay').textContent = result.qrImage;
+                document.getElementById('qrModal').style.display = 'flex';
+            }
+
+            logout() {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                window.location.href = '../index.html';
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: #dc2626;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    z-index: 10000;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    max-width: 300px;
+                `;
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+                document.body.appendChild(errorDiv);
+
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+        }
+
+        // Global functions for button clicks
+        function generateQRCode(courseId) {
+            const dashboard = new LecturerDashboard();
+            dashboard.generateQRCode(courseId);
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #0f766e;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 10000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                max-width: 300px;
+            `;
+            notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('qrModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQRModal();
+            }
+        });
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            new LecturerDashboard();
+        });
+    </script>
 </body>
 </html>
