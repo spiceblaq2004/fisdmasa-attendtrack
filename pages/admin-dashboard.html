@@ -80,7 +80,7 @@
         
         .health-item {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             padding: 10px 0;
             border-bottom: 1px solid #e5e7eb;
@@ -111,6 +111,7 @@
             text-decoration: none;
             color: var(--dark);
             transition: transform 0.3s;
+            cursor: pointer;
         }
         
         .admin-action:hover {
@@ -133,8 +134,8 @@
             </div>
             <div class="nav-links">
                 <a href="../index.html">Home</a>
-                <span>Welcome, Admin!</span>
-                <a href="../index.html" class="login-btn">Logout</a>
+                <span id="userWelcome">Welcome, Admin!</span>
+                <a href="../index.html" class="login-btn logout-btn">Logout</a>
             </div>
         </div>
     </nav>
@@ -145,7 +146,7 @@
                 <h1>Admin Dashboard</h1>
                 <p>Manage the entire attendance system</p>
             </div>
-            <div class="btn btn-primary">
+            <div class="btn btn-primary" onclick="showNotification('System settings coming soon!')">
                 <i class="fas fa-cog"></i>
                 System Settings
             </div>
@@ -198,69 +199,3 @@
                 <div class="activity-item">
                     <div class="activity-icon">
                         <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div>
-                        <strong>Low attendance alert</strong> for FSDM 305
-                        <div style="color: var(--gray); font-size: 0.9rem;">1 hour ago</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="system-health">
-                <h2 style="margin-bottom: 20px;">System Health</h2>
-                <div class="health-item">
-                    <span>Server Status</span>
-                    <span class="health-status status-good">Online</span>
-                </div>
-                <div class="health-item">
-                    <span>Database</span>
-                    <span class="health-status status-good">Healthy</span>
-                </div>
-                <div class="health-item">
-                    <span>QR Service</span>
-                    <span class="health-status status-good">Active</span>
-                </div>
-                <div class="health-item">
-                    <span>Email Notifications</span>
-                    <span class="health-status status-warning">Delayed</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="admin-actions">
-            <a href="#" class="admin-action">
-                <i class="fas fa-user-cog"></i>
-                <h3>User Management</h3>
-                <p>Manage students and lecturers</p>
-            </a>
-            <a href="#" class="admin-action">
-                <i class="fas fa-book"></i>
-                <h3>Course Management</h3>
-                <p>Add/edit courses</p>
-            </a>
-            <a href="#" class="admin-action">
-                <i class="fas fa-chart-bar"></i>
-                <h3>Analytics</h3>
-                <p>View detailed reports</p>
-            </a>
-            <a href="#" class="admin-action">
-                <i class="fas fa-download"></i>
-                <h3>Data Export</h3>
-                <p>Export system data</p>
-            </a>
-            <a href="#" class="admin-action">
-                <i class="fas fa-bell"></i>
-                <h3>Notifications</h3>
-                <p>Configure alerts</p>
-            </a>
-            <a href="#" class="admin-action">
-                <i class="fas fa-cog"></i>
-                <h3>System Settings</h3>
-                <p>Configure system</p>
-            </a>
-        </div>
-    </div>
-
-    <script src="../js/admin-dashboard.js"></script>
-</body>
-</html>
