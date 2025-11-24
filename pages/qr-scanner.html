@@ -67,10 +67,11 @@
         .success-message {
             background: #d1fae5;
             color: #065f46;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             margin: 20px 0;
             display: none;
+            text-align: center;
         }
         
         .manual-entry {
@@ -99,6 +100,27 @@
             border-radius: 8px;
             font-size: 1rem;
         }
+
+        .demo-qr-codes {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .demo-qr {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .demo-qr:hover {
+            border-color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -126,19 +148,19 @@
             <h3>Camera Scanner</h3>
             <p>Position QR code within frame</p>
             
-            <div class="btn btn-primary" style="margin-top: 20px;">
+            <div class="btn btn-primary" style="margin-top: 20px;" onclick="simulateQRScan()">
                 <i class="fas fa-camera"></i>
-                Start Camera
+                Simulate QR Scan (Demo)
             </div>
         </div>
         
         <div class="success-message" id="successMessage">
-            <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
-            <h3>Attendance Marked Successfully!</h3>
-            <p>FSDM 301: Fire Dynamics - 8:00 AM</p>
-            <p><strong>Dr. A. Mensah</strong></p>
-            <div style="margin-top: 15px;">
-                <a href="student-dashboard.html" class="btn">Back to Dashboard</a>
+            <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 15px; color: #10b981;"></i>
+            <h3 style="color: #065f46; margin-bottom: 10px;">Attendance Marked Successfully!</h3>
+            <p style="margin-bottom: 5px;"><strong id="successCourse">FSDM 301: Fire Dynamics</strong></p>
+            <p style="margin-bottom: 15px; color: #065f46;" id="successLecturer">Dr. A. Mensah - 8:00 AM</p>
+            <div style="margin-top: 20px;">
+                <a href="student-dashboard.html" class="btn" style="background: #065f46; color: white;">Back to Dashboard</a>
             </div>
         </div>
         
@@ -146,7 +168,7 @@
             <h3 style="margin-bottom: 15px;">How to Scan:</h3>
             <div class="instruction-step">
                 <div class="step-number">1</div>
-                <div>Ensure good lighting</div>
+                <div>Ensure good lighting conditions</div>
             </div>
             <div class="instruction-step">
                 <div class="step-number">2</div>
@@ -154,36 +176,238 @@
             </div>
             <div class="instruction-step">
                 <div class="step-number">3</div>
-                <div>Position code within frame</div>
+                <div>Position code within the frame</div>
             </div>
             <div class="instruction-step">
                 <div class="step-number">4</div>
-                <div>Wait for confirmation</div>
+                <div>Wait for confirmation message</div>
+            </div>
+        </div>
+
+        <div class="demo-qr-codes">
+            <h3 style="margin-bottom: 15px;">Demo QR Codes</h3>
+            <p style="margin-bottom: 15px; color: var(--gray);">Click any code to simulate scanning</p>
+            
+            <div class="demo-qr" onclick="scanDemoQR('FSDM 301: Fire Dynamics', 'Dr. A. Mensah')">
+                <strong>FSDM 301: Fire Dynamics</strong>
+                <div style="color: var(--gray); font-size: 0.9rem;">Dr. A. Mensah - Mon, Wed 8:00 AM</div>
+                <small>Click to simulate scan</small>
+            </div>
+            
+            <div class="demo-qr" onclick="scanDemoQR('FSDM 303: Disaster Management', 'Dr. K. Owusu')">
+                <strong>FSDM 303: Disaster Management</strong>
+                <div style="color: var(--gray); font-size: 0.9rem;">Dr. K. Owusu - Tue, Thu 10:00 AM</div>
+                <small>Click to simulate scan</small>
+            </div>
+            
+            <div class="demo-qr" onclick="scanDemoQR('FSDM 305: Safety Engineering', 'Prof. E. Asante')">
+                <strong>FSDM 305: Safety Engineering</strong>
+                <div style="color: var(--gray); font-size: 0.9rem;">Prof. E. Asante - Fri 2:00 PM</div>
+                <small>Click to simulate scan</small>
             </div>
         </div>
         
         <div class="manual-entry">
             <h3 style="margin-bottom: 15px;">Manual Entry</h3>
-            <p style="margin-bottom: 20px; color: var(--gray);">If QR code is not working</p>
+            <p style="margin-bottom: 20px; color: var(--gray);">If QR code is not working, enter the code manually</p>
             
             <div class="form-group">
                 <label for="sessionCode">Session Code</label>
-                <input type="text" id="sessionCode" placeholder="Enter 6-digit code">
+                <input type="text" id="sessionCode" placeholder="Enter 6-digit code (Demo: 123456)">
             </div>
             
-            <button class="btn btn-primary" style="width: 100%;">
+            <button class="btn btn-primary" style="width: 100%;" onclick="manualEntry()">
                 <i class="fas fa-paper-plane"></i>
                 Submit Attendance
             </button>
         </div>
     </div>
 
-    <script src="../js/qr-scanner.js"></script>
     <script>
-        // Demo functionality
-        document.querySelector('.btn-primary').addEventListener('click', function() {
-            document.getElementById('successMessage').style.display = 'block';
-            this.style.display = 'none';
+        // QR Scanner functionality
+        class QRScanner {
+            constructor() {
+                this.token = localStorage.getItem('authToken');
+                this.user = JSON.parse(localStorage.getItem('user') || '{}');
+                
+                if (!this.token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            validateToken(token) {
+                try {
+                    const userData = JSON.parse(atob(token));
+                    if (userData.exp < Date.now()) {
+                        throw new Error('Token expired');
+                    }
+                    return userData;
+                } catch (error) {
+                    throw { error: 'Invalid token' };
+                }
+            }
+
+            async markAttendance(qrCode) {
+                await this.delay(1500);
+                
+                this.validateToken(this.token);
+
+                // Simulate different responses based on QR code
+                const responses = {
+                    'default': {
+                        course: 'FSDM 301: Fire Dynamics',
+                        lecturer: 'Dr. A. Mensah',
+                        time: '8:00 AM'
+                    },
+                    'FSDM 301': {
+                        course: 'FSDM 301: Fire Dynamics',
+                        lecturer: 'Dr. A. Mensah',
+                        time: '8:00 AM'
+                    },
+                    'FSDM 303': {
+                        course: 'FSDM 303: Disaster Management',
+                        lecturer: 'Dr. K. Owusu',
+                        time: '10:00 AM'
+                    },
+                    'FSDM 305': {
+                        course: 'FSDM 305: Safety Engineering',
+                        lecturer: 'Prof. E. Asante',
+                        time: '2:00 PM'
+                    }
+                };
+
+                let response = responses.default;
+                
+                if (qrCode.includes('301')) response = responses['FSDM 301'];
+                if (qrCode.includes('303')) response = responses['FSDM 303'];
+                if (qrCode.includes('305')) response = responses['FSDM 305'];
+
+                // Simulate random success/failure
+                if (Math.random() > 0.1) { // 90% success rate
+                    return {
+                        success: true,
+                        message: 'Attendance marked successfully! 🎉',
+                        data: response
+                    };
+                } else {
+                    throw { error: 'QR code has expired or is invalid' };
+                }
+            }
+        }
+
+        // Global functions
+        let scanner = new QRScanner();
+
+        function simulateQRScan() {
+            const randomCourse = Math.random() > 0.5 ? 'FSDM 301: Fire Dynamics' : 'FSDM 303: Disaster Management';
+            const randomLecturer = Math.random() > 0.5 ? 'Dr. A. Mensah' : 'Dr. K. Owusu';
+            scanDemoQR(randomCourse, randomLecturer);
+        }
+
+        async function scanDemoQR(course, lecturer) {
+            const scannerBox = document.querySelector('.scanner-box');
+            const successMessage = document.getElementById('successMessage');
+            const successCourse = document.getElementById('successCourse');
+            const successLecturer = document.getElementById('successLecturer');
+
+            // Show scanning animation
+            scannerBox.style.opacity = '0.7';
+            scannerBox.querySelector('.scanner-placeholder i').className = 'fas fa-spinner fa-spin';
+            scannerBox.querySelector('h3').textContent = 'Scanning QR Code...';
+            scannerBox.querySelector('p').textContent = 'Please wait while we process the code';
+
+            try {
+                const result = await scanner.markAttendance(course);
+                
+                if (result.success) {
+                    // Show success message
+                    successCourse.textContent = course;
+                    successLecturer.textContent = `${lecturer} - ${new Date().toLocaleTimeString()}`;
+                    successMessage.style.display = 'block';
+                    scannerBox.style.display = 'none';
+                    
+                    // Update student's attendance record in localStorage
+                    updateAttendanceRecord(course);
+                }
+            } catch (error) {
+                showNotification(error.error || 'Failed to scan QR code', 'error');
+                resetScanner();
+            }
+        }
+
+        async function manualEntry() {
+            const sessionCode = document.getElementById('sessionCode').value;
+            
+            if (!sessionCode) {
+                showNotification('Please enter a session code', 'error');
+                return;
+            }
+
+            if (sessionCode === '123456') {
+                await scanDemoQR('FSDM 301: Fire Dynamics', 'Dr. A. Mensah');
+            } else {
+                showNotification('Invalid session code. Use 123456 for demo.', 'error');
+            }
+        }
+
+        function updateAttendanceRecord(course) {
+            // Get current records or initialize empty array
+            let records = JSON.parse(localStorage.getItem('fisdmasa_records')) || [];
+            
+            // Add new record
+            records.push({
+                id: records.length + 1,
+                session: records.length + 1,
+                student: 1, // Demo student ID
+                courseId: course.includes('301') ? 1 : course.includes('303') ? 2 : 3,
+                timestamp: new Date(),
+                status: 'present'
+            });
+            
+            // Save back to localStorage
+            localStorage.setItem('fisdmasa_records', JSON.stringify(records));
+        }
+
+        function resetScanner() {
+            const scannerBox = document.querySelector('.scanner-box');
+            scannerBox.style.opacity = '1';
+            scannerBox.querySelector('.scanner-placeholder i').className = 'fas fa-camera';
+            scannerBox.querySelector('h3').textContent = 'Camera Scanner';
+            scannerBox.querySelector('p').textContent = 'Position QR code within frame';
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#dc2626' : '#0f766e';
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 10000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                max-width: 300px;
+            `;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info'}-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Initialize scanner
+        document.addEventListener('DOMContentLoaded', () => {
+            scanner = new QRScanner();
         });
     </script>
 </body>
