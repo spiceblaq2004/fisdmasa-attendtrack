@@ -199,3 +199,176 @@
                 <div class="activity-item">
                     <div class="activity-icon">
                         <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <strong>Low attendance alert</strong> for FSDM 305
+                        <div style="color: var(--gray); font-size: 0.9rem;">1 hour ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <strong>New student registered</strong> - FSDM2024328
+                        <div style="color: var(--gray); font-size: 0.9rem;">2 hours ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-health">
+                <h2 style="margin-bottom: 20px;">System Health</h2>
+                <div class="health-item">
+                    <span>Server Status</span>
+                    <span class="health-status status-good">Online</span>
+                </div>
+                <div class="health-item">
+                    <span>Database</span>
+                    <span class="health-status status-good">Healthy</span>
+                </div>
+                <div class="health-item">
+                    <span>QR Service</span>
+                    <span class="health-status status-good">Active</span>
+                </div>
+                <div class="health-item">
+                    <span>Email Notifications</span>
+                    <span class="health-status status-warning">Delayed</span>
+                </div>
+                <div class="health-item">
+                    <span>Backup System</span>
+                    <span class="health-status status-good">Running</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-actions">
+            <div class="admin-action" onclick="showNotification('User management coming soon!')">
+                <i class="fas fa-user-cog"></i>
+                <h3>User Management</h3>
+                <p>Manage students and lecturers</p>
+            </div>
+            <div class="admin-action" onclick="showNotification('Course management coming soon!')">
+                <i class="fas fa-book"></i>
+                <h3>Course Management</h3>
+                <p>Add/edit courses</p>
+            </div>
+            <div class="admin-action" onclick="showNotification('Analytics coming soon!')">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Analytics</h3>
+                <p>View detailed reports</p>
+            </div>
+            <div class="admin-action" onclick="showNotification('Data export coming soon!')">
+                <i class="fas fa-download"></i>
+                <h3>Data Export</h3>
+                <p>Export system data</p>
+            </div>
+            <div class="admin-action" onclick="showNotification('Notifications coming soon!')">
+                <i class="fas fa-bell"></i>
+                <h3>Notifications</h3>
+                <p>Configure alerts</p>
+            </div>
+            <div class="admin-action" onclick="showNotification('System settings coming soon!')">
+                <i class="fas fa-cog"></i>
+                <h3>System Settings</h3>
+                <p>Configure system</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin Dashboard functionality
+        class AdminDashboard {
+            constructor() {
+                this.token = localStorage.getItem('authToken');
+                this.user = JSON.parse(localStorage.getItem('user') || '{}');
+                this.init();
+            }
+
+            async init() {
+                if (!this.token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (this.user.role !== 'admin') {
+                    this.showError('Access denied. Admin account required.');
+                    setTimeout(() => {
+                        this.logout();
+                    }, 3000);
+                    return;
+                }
+
+                this.updateWelcomeMessage();
+                this.setupEventListeners();
+            }
+
+            updateWelcomeMessage() {
+                document.getElementById('userWelcome').textContent = `Welcome, ${this.user.name.split(' ')[0]}!`;
+            }
+
+            setupEventListeners() {
+                // Logout button
+                document.querySelector('.logout-btn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.logout();
+                });
+            }
+
+            logout() {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                window.location.href = '../index.html';
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: #dc2626;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    z-index: 10000;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    max-width: 300px;
+                `;
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+                document.body.appendChild(errorDiv);
+
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #0f766e;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 10000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                max-width: 300px;
+            `;
+            notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            new AdminDashboard();
+        });
+    </script>
+</body>
+</html>
